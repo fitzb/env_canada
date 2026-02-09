@@ -1,15 +1,17 @@
 import asyncio
 import logging
 import math
-from datetime import timedelta
+import os
+from datetime import datetime, timedelta
 from io import BytesIO
+from typing import Any, Literal
 
 import dateutil.parser
-import voluptuous as vol
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
 from lxml import etree as et
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
+from pydantic import BaseModel, Field, computed_field, model_validator
 
 from .constants import USER_AGENT
 from .ec_cache import Cache
@@ -133,80 +135,63 @@ async def _get_resource(url, params, bytes=True):
         return await response.text()
 
 
-class ECMap:
-    def __init__(self, **kwargs):
-        """Initialize the map object."""
+class Coordinates(BaseModel):
+    lat: int | float = Field(..., ge=-90, le=90)
+    lon: int | float = Field(..., ge=-180, le=180)
 
-        init_schema = vol.Schema(
-            {
-                vol.Required("coordinates"): (
-                    vol.All(vol.Or(int, float), vol.Range(-90, 90)),
-                    vol.All(vol.Or(int, float), vol.Range(-180, 180)),
-                ),
-                vol.Required("radius", default=200): vol.All(int, vol.Range(min=10)),
-                vol.Required("width", default=800): vol.All(int, vol.Range(min=10)),
-                vol.Required("height", default=800): vol.All(int, vol.Range(min=10)),
-                vol.Required("legend", default=True): bool,
-                vol.Required("timestamp", default=True): bool,
-                vol.Required("layer_opacity", default=65): vol.All(
-                    int, vol.Range(0, 100)
-                ),
-                vol.Required("layer", default="rain"): vol.In(wms_layers.keys()),
-                vol.Required("colors", default=14): vol.In([8, 14]),
-                vol.Optional("language", default="english"): vol.In(
-                    ["english", "french"]
-                ),
-                vol.Required("fps", default=5): vol.All(int, vol.Range(1, 30)),
-                vol.Required("loop_minutes", default=0): vol.All(int, vol.Range(min=0)),
-                vol.Required("interpolation", default=False): bool,
-                vol.Required("webp", default=False): bool,
-                vol.Required("future_minutes", default=0): vol.All(
-                    int, vol.Range(min=0)
-                ),
+class ECMap(BaseModel):
+    """Model to hold the Environment Canadata Map"""
+
+    coordinates: Coordinates
+    radius: int = Field(200, ge=10)
+    width: int = Field(800, ge=10)
+    height: int = Field(800, ge=10)
+    show_legend: bool = Field(True, alias="legend")
+    show_timestamp: bool = Field(True, alias="timestamp")
+    layer_opacity: int = Field(65, ge=0, le=100)
+    layer: Literal["rain", "snow", "precip_type"] = Field("rain")
+    language: Literal["english", "french"] = Field("english")
+    metadata: dict[str, Any] = Field({"attribution": ATTRIBUTION["english"]})
+    image: Any = Field(None)
+    colors: int = Field(14,ge=8,le=14)
+    fps: int = Field(5, ge=1, le=30)
+    loop_minutes: int = Field(0, ge=0)
+    interpolation: bool = Field(False)
+    webp: bool = Field(False)
+    future_minutes: int = Field(0,ge=0)
+    _future_layer = wms_layers_extrapolation.get(layer)
+    _future_boundary = None
+    _reference_time = None
+    _timestamp: datetime | None = None
+    _font: Any | None = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def set_metadata_and_coordinates(cls, values: dict[str, Any]) -> dict[str, Any]:
+        if "coordinates" in values:
+            values["coordinates"] = {
+                "lat": values["coordinates"][0],
+                "lon": values["coordinates"][1],
             }
+        if "language" in values:
+            values["metadata"] = {"attribution": ATTRIBUTION["english"]}
+        return values
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def bbox(self) -> int:
+        return _compute_bounding_box(
+            self.radius, self.coordinates.lat, self.coordinates.lon
         )
 
-        kwargs = init_schema(kwargs)
-        self.language = kwargs["language"]
-        self.metadata = {"attribution": ATTRIBUTION[self.language]}
-
-        # Get layer
-        self.layer = kwargs["layer"]
-        self.colors = kwargs["colors"]
-
-        # Get map parameters
-        self.image = None
-        self.width = kwargs["width"]
-        self.height = kwargs["height"]
-        self.bbox = _compute_bounding_box(kwargs["radius"], *kwargs["coordinates"])
-        self.map_params = {
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def map_params(self) -> dict[str, str | int]:
+        return {
             "bbox": ",".join([str(coord) for coord in self.bbox]),
             "width": self.width,
             "height": self.height,
         }
-        self.layer_opacity = kwargs["layer_opacity"]
-
-        # Get overlay parameters
-        self.show_legend = kwargs["legend"]
-        self.show_timestamp = kwargs["timestamp"]
-
-        # Get animation parameters
-        self.fps = kwargs["fps"]
-        # 0 means use the full range of images the WMS server reports
-        self.loop_minutes = kwargs["loop_minutes"]
-        self.webp = kwargs["webp"]
-
-        # Smooths the WMS-rendered radar layer instead of leaving it pixelated
-        self.interpolation = kwargs["interpolation"]
-
-        # How far past "now" to extend get_loop() using the radar
-        # extrapolation (nowcast) layer, if one exists for self.layer.
-        self.future_minutes = kwargs["future_minutes"]
-        self._future_layer = wms_layers_extrapolation.get(self.layer)
-        self._future_boundary = None
-        self._reference_time = None
-
-        self.timestamp = None
 
     def _get_cache_prefix(self):
         """Generate a location-specific cache prefix based on bounding box."""

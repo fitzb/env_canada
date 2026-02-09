@@ -1,10 +1,11 @@
 import csv
 import io
+from typing import Any
 
-import voluptuous as vol
 from aiohttp import ClientSession
 from dateutil.parser import isoparse
 from geopy import distance
+from pydantic import BaseModel, Field, model_validator
 
 from .constants import USER_AGENT
 
@@ -56,52 +57,36 @@ async def closest_site(lat, lon):
     return closest
 
 
-class ECHydro:
+class Coordinates(BaseModel):
+    lat: int | float = Field(..., ge=-90, le=90)
+    lon: int | float = Field(..., ge=-180, le=180)
+
+
+class ECHydro(BaseModel):
     """Get hydrometric data from Environment Canada."""
 
-    def __init__(self, **kwargs):
-        """Initialize the data object."""
+    coordinates: Coordinates | None = Field(None)
+    province: str | None = Field(None, max_length=2)
+    station: str | None = Field(None, max_length=7)
+    measurements: dict[str, Any] = {}
+    timestamp: str | None = Field(None)
+    location: str | None = Field(None)
 
-        init_schema = vol.Schema(
-            vol.All(
-                vol.Any(
-                    {
-                        vol.Required("coordinates"): object,
-                    },
-                    {
-                        vol.Required("province"): object,
-                        vol.Required("station"): object,
-                    },
-                ),
-                {
-                    vol.Optional("province"): vol.All(str, vol.Length(2)),
-                    vol.Optional("station"): vol.All(str, vol.Length(7)),
-                    vol.Optional("coordinates"): (
-                        vol.All(vol.Or(int, float), vol.Range(-90, 90)),
-                        vol.All(vol.Or(int, float), vol.Range(-180, 180)),
-                    ),
-                },
-            )
-        )
+    @model_validator(mode="before")
+    @classmethod
+    def set_coordinates(cls, values: dict[str, Any]) -> dict[str, Any]:
+        if "coordinates" in values:
+            values["coordinates"] = {
+                "lat": values["coordinates"][0],
+                "lon": values["coordinates"][1],
+            }
+        return values
 
-        kwargs = init_schema(kwargs)
-
-        self.measurements = {}
-        self.timestamp = None
-        self.location = None
-
-        if (
-            "province" in kwargs
-            and "station" in kwargs
-            and kwargs["province"] is not None
-            and kwargs["station"] is not None
-        ):
-            self.province = kwargs["province"]
-            self.station = kwargs["station"]
-        else:
-            self.province = None
-            self.station = None
-            self.coordinates = kwargs["coordinates"]
+    @model_validator(mode="after")
+    def check_one_or_another_is_present(self) -> "ECHydro":
+        if self.province is None and self.station is None and self.coordinates is None:
+            raise ValueError("Provice and station or 'coordinates' must be provided.")
+        return self
 
     async def update(self):
         """Get the latest data from Environment Canada."""
@@ -109,7 +94,7 @@ class ECHydro:
         # Determine closest site if not provided
 
         if not (self.province and self.station) and self.coordinates:
-            closest = await closest_site(*self.coordinates)
+            closest = await closest_site(self.coordinates.lat, self.coordinates.lon)
             self.province = closest["Prov"]
             self.station = closest["ID"]
             self.location = closest["Name"].title()
