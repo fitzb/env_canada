@@ -4,14 +4,15 @@ import csv
 import logging
 from datetime import datetime
 from io import StringIO
+from typing import Any, Literal
 
 import lxml.html
 import pandas as pd
-import voluptuous as vol
 from aiohttp import ClientSession
 from dateutil import parser, tz
 from dateutil.relativedelta import relativedelta
 from lxml import etree as et
+from pydantic import BaseModel, Field
 
 from .constants import USER_AGENT
 
@@ -206,39 +207,18 @@ async def get_historical_stations(
         return stations
 
 
-class ECHistorical:
+class ECHistorical(BaseModel):
     """Get historical weather data from Environment Canada."""
 
-    def __init__(self, **kwargs):
-        """Initialize the data object."""
-
-        init_schema = vol.Schema(
-            {
-                vol.Required("station_id"): int,
-                vol.Required("year"): vol.All(
-                    int, vol.Range(1840, datetime.today().year)
-                ),
-                vol.Required("month", default=1): vol.All(int, vol.Range(1, 12)),
-                vol.Required("language", default="english"): vol.In(
-                    ["english", "french"]
-                ),
-                vol.Required("format", default="xml"): vol.In(["xml", "csv"]),
-                vol.Required("timeframe", default=2): vol.In([1, 2]),
-            }
-        )
-
-        kwargs = init_schema(kwargs)
-
-        self.station_id = kwargs["station_id"]
-        self.timeframe = kwargs["timeframe"]
-        self.year = kwargs["year"]
-        self.month = kwargs["month"]
-        self.language = kwargs["language"]
-        self.format = kwargs["format"]
-        self.submit = "Download+Data"
-
-        self.metadata = {}
-        self.station_data = {}
+    station_id: int
+    year: int = Field(..., ge=1840, le=datetime.today().year)
+    month: int = Field(1, ge=1, le=12)
+    language: Literal["english", "french"] = Field("english")
+    format: Literal["xml", "csv"] = Field("xml")
+    timeframe: Literal[1, 2] = Field(2)
+    submit: str = Field("Download+Data")
+    metadata: dict[str, Any] = Field({})
+    station_data: dict[str, Any] = {}
 
     async def update(self):
         """Get the historical data from Environment Canada."""

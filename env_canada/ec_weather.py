@@ -2,11 +2,10 @@ import copy
 import csv
 import logging
 import re
-from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
+from typing import Any, Literal
 from urllib.parse import urljoin
 
-import voluptuous as vol
 from aiohttp import (
     ClientConnectorDNSError,
     ClientResponseError,
@@ -17,6 +16,7 @@ from dateutil import parser, tz
 from geopy import distance
 from lxml import etree as et
 from lxml.etree import _Element
+from pydantic import BaseModel, Field, computed_field, model_validator
 
 from . import ec_exc
 from .constants import USER_AGENT
@@ -40,10 +40,9 @@ ATTRIBUTION = {
 __all__ = ["ECWeather", "ECWeatherUpdateFailed", "get_ec_sites_list"]
 
 
-@dataclass
-class MetaData:
+class MetaData(BaseModel):
     attribution: str
-    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=timezone.utc)
+    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=UTC)
     station: str | None = None
     location: str | None = None
     cache_returned_on_update: int = 0  # Resets to 0 after successful update
@@ -229,17 +228,17 @@ ALERT_TYPE_TO_NAME = {
 }
 
 
-def validate_station(station):
+def validate_station(station: str | None) -> str | None:
     """Check that the station ID is well-formed."""
     if station is None:
-        return
+        return None
     # Accept either full format "XX/s0000###" or simplified 1-3 digit format
     if not (
         re.fullmatch(r"[A-Z]{2}/s0000\d{3}", station)
         or re.fullmatch(r"s0000\d{3}", station)
         or re.fullmatch(r"\d{1,3}", station)
     ):
-        raise vol.Invalid(
+        raise ValueError(
             'Station ID must be of the form "XX/s0000###", "s0000###" or 1-3 digits'
         )
     return station
@@ -338,7 +337,7 @@ async def discover_weather_file_url(session, province_code, station_number, lang
     lang_suffix = "en" if language == "english" else "fr"
 
     # Start with current UTC hour and work backwards
-    current_utc = datetime.now(timezone.utc)
+    current_utc = datetime.now(UTC)
 
     for hours_back in range(3):  # Check current hour and 2 hours back
         check_time = current_utc - timedelta(hours=hours_back)
@@ -378,59 +377,63 @@ async def discover_weather_file_url(session, province_code, station_number, lang
     )
 
 
-class ECWeather:
+class Coordinates(BaseModel):
+    lat: int | float | None
+    lon: int | float | None
+
+
+class ECWeather(BaseModel):
     """Get weather data from Environment Canada."""
 
-    def __init__(self, **kwargs):
-        """Initialize the data object."""
+    station_id: str | None = Field(None)
+    coordinates: Coordinates | None = Field(None)
+    language: Literal["english", "french"] = Field("english")
+    max_data_age: int = Field(2)
+    metadata: MetaData = MetaData(attribution=ATTRIBUTION["english"])
+    conditions: dict[str, Any] = {}
+    alerts: dict[str, Any] = {}
+    daily_forecasts: list = []
+    hourly_forecasts: list = []
+    forecast_time: datetime | None = None
+    site_list: list = []
+    _station_resolved: bool = False
+    _station_tuple: tuple[str, str] | None = None
 
-        init_schema = vol.Schema(
-            vol.All(
-                {
-                    vol.Required(
-                        vol.Any("station_id", "coordinates"),
-                        msg="Must specify either 'station_id' or 'coordinates'",
-                    ): object,
-                    vol.Optional("language"): object,
-                },
-                {
-                    vol.Optional("station_id"): validate_station,
-                    vol.Optional("coordinates"): (
-                        vol.All(vol.Or(int, float), vol.Range(-90, 90)),
-                        vol.All(vol.Or(int, float), vol.Range(-180, 180)),
-                    ),
-                    vol.Optional("language", default="english"): vol.In(
-                        ["english", "french"]
-                    ),
-                    vol.Optional("max_data_age", default=2): int,
-                },
+    @model_validator(mode="before")
+    @classmethod
+    def set_metadata_and_coordinates(cls, values: dict[str, Any]) -> dict[str, Any]:
+        if "coordinates" in values:
+            values["coordinates"] = {
+                "lat": values["coordinates"][0],
+                "lon": values["coordinates"][1],
+            }
+        if "language" in values:
+            values["metadata"] = MetaData(attribution=ATTRIBUTION[values["language"]])
+        return values
+
+    @model_validator(mode="after")
+    def check_one_or_another_is_present(self) -> "ECWeather":
+        if self.station_id is None and self.coordinates is None:
+            raise ValueError(
+                "At least one of 'station_id' or 'coordinates' must be provided."
             )
-        )
+        return self
 
-        kwargs = init_schema(kwargs)
-
-        self.language = kwargs["language"]
-        self.max_data_age = kwargs["max_data_age"]
-        self.metadata = MetaData(ATTRIBUTION[self.language])
-        self.conditions = {}
-        self.alerts = {}
-        self.daily_forecasts = []
-        self.hourly_forecasts = []
-        self.forecast_time = ""
-        self.site_list = []
-        self._station_resolved = False
-        self._station_tuple = (
-            None  # Internal storage for (province_code, station_number)
-        )
-
-        if "station_id" in kwargs and kwargs["station_id"] is not None:
-            self.station_id = kwargs["station_id"]  # Keep as string for external API
-            self.lat = None
-            self.lon = None
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def lat(self) -> int | float | None:
+        if self.coordinates:
+            return self.coordinates.lat
         else:
-            self.station_id = None
-            self.lat = kwargs["coordinates"][0]
-            self.lon = kwargs["coordinates"][1]
+            return None
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def lon(self) -> int | float | None:
+        if self.coordinates:
+            return self.coordinates.lon
+        else:
+            return None
 
     def handle_error(self, err: Exception | None, msg: str) -> None:
         """
@@ -440,13 +443,14 @@ class ECWeather:
 
         On returning previous results, bump the cache returned counter else clear the counter.
         """
-        expiry = self.metadata.timestamp + timedelta(hours=self.max_data_age)
-        self.metadata.last_update_error = msg
-        if expiry > datetime.now(timezone.utc):
-            self.metadata.cache_returned_on_update += 1
-            return
+        if self.metadata:
+            expiry = self.metadata.timestamp + timedelta(hours=self.max_data_age)
+            self.metadata.last_update_error = msg
+            if expiry > datetime.now(UTC):
+                self.metadata.cache_returned_on_update += 1
+                return
 
-        self.metadata.cache_returned_on_update = 0
+            self.metadata.cache_returned_on_update = 0
         raise ECWeatherUpdateFailed(msg) from err
 
     async def _resolve_station(self) -> None:
@@ -471,10 +475,12 @@ class ECWeather:
                     site["Codes"] == f"s0000{self._station_tuple[1].zfill(3)}"
                     and site["Province Codes"] == self._station_tuple[0]
                 ):
-                    self.lat = site["Latitude"]
-                    self.lon = site["Longitude"]
+                    self.coordinates = Coordinates(
+                        lat=site["Latitude"],
+                        lon=site["Longitude"],
+                    )
                     break
-            if not self.lat:
+            if not self.coordinates:
                 raise ec_exc.UnknownStationId
         else:
             self._station_tuple = closest_site(self.site_list, self.lat, self.lon)
@@ -496,17 +502,24 @@ class ECWeather:
         """Get the latest data from Environment Canada."""
 
         # Clear error at start, any error that is handled will set it
+        if not self.metadata:
+            self.metadata = MetaData(attribution=ATTRIBUTION[self.language])
         self.metadata.last_update_error = ""
 
         # Resolve station ID and coordinates if not already done
         await self._resolve_station()
 
         LOG.debug(
-            "update(): station %s lat %f lon %f", self.station_id, self.lat, self.lon
+            "update(): station %s lat %f lon %f",
+            self.station_id,
+            self.lat,
+            self.lon,
         )
 
         # Get weather data
         try:
+            if self._station_tuple is None:
+                return self.handle_error(TypeError(), "Unable to discover weather file")
             async with ClientSession(raise_for_status=True) as session:
                 # Discover the URL for the most recent weather file
                 weather_url = await discover_weather_file_url(
@@ -549,7 +562,7 @@ class ECWeather:
                 None, "Timestamp not found in retrieved weather; response ignored"
             )
         expiry = timestamp + timedelta(hours=self.max_data_age)
-        if expiry < datetime.now(timezone.utc):
+        if expiry < datetime.now(UTC):
             return self.handle_error(
                 None,
                 f"Outdated conditions returned from Environment Canada '{timestamp}'; not used",

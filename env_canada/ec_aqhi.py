@@ -1,11 +1,11 @@
 import logging
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import UTC, datetime
+from typing import Any, Literal
 
-import voluptuous as vol
 from aiohttp import ClientSession, ClientTimeout
 from geopy import distance
 from lxml import etree as et
+from pydantic import BaseModel, Field, model_validator
 
 from .constants import USER_AGENT
 
@@ -25,8 +25,7 @@ ATTRIBUTION = {
 }
 
 
-@dataclass
-class MetaData:
+class MetaData(BaseModel):
     attribution: str
     timestamp: datetime | None = None
     location: str | None = None
@@ -40,14 +39,14 @@ __all__ = ["ECAirQuality"]
 
 def timestamp_to_datetime(timestamp):
     dt = datetime.strptime(timestamp, "%Y%m%d%H%M%S")
-    dt = dt.replace(tzinfo=timezone.utc)
+    dt = dt.replace(tzinfo=UTC)
     return dt
 
 
 async def get_aqhi_regions(language):
     """Get list of all AQHI regions from Environment Canada, for auto-config."""
-    zone_name_tag = "name_%s_CA" % language.lower()
-    region_name_tag = "name%s" % language.title()
+    zone_name_tag = f"name_{language.lower()}_CA"
+    region_name_tag = f"name{language.title()}"
 
     LOG.debug("get_aqhi_regions() started")
 
@@ -100,61 +99,40 @@ async def find_closest_region(language, lat, lon):
     return min(region_list, key=site_distance)
 
 
-class ECAirQuality:
+class Coordinates(BaseModel):
+    lat: int | float | None = None
+    lon: int | float | None = None
+
+
+class ECAirQuality(BaseModel):
     """Get air quality data from Environment Canada."""
 
-    def __init__(self, **kwargs):
-        """Initialize the data object."""
+    zone_id: Literal["atl", "ont", "pnr", "pyr", "que"] | None = None
+    region_id: str | None = Field(None, max_length=5)
+    coordinates: Coordinates = Field(Coordinates())
+    language: Literal["EN", "FR"] = Field("EN")
+    metadata: MetaData = Field(MetaData(attribution="EN"))
+    region_name: str | None = None
+    current: str | None = None
+    current_timestamp: str | None = None
+    forecasts: dict[str, Any] = {"daily": {}, "hourly": {}}
 
-        init_schema = vol.Schema(
-            vol.All(
-                vol.Any(
-                    {
-                        vol.Required("coordinates"): object,
-                        vol.Optional("language"): object,
-                    },
-                    {
-                        vol.Required("zone_id"): object,
-                        vol.Required("region_id"): object,
-                        vol.Optional("language"): object,
-                    },
-                ),
-                {
-                    vol.Optional("zone_id"): vol.In(
-                        ["atl", "ont", "pnr", "pyr", "que"]
-                    ),
-                    vol.Optional("region_id"): vol.All(str, vol.Length(5)),
-                    vol.Optional("coordinates"): (
-                        vol.All(vol.Or(int, float), vol.Range(-90, 90)),
-                        vol.All(vol.Or(int, float), vol.Range(-180, 180)),
-                    ),
-                    vol.Optional("language", default="EN"): vol.In(["EN", "FR"]),
-                },
-            )
-        )
-
-        kwargs = init_schema(kwargs)
-
-        self.language = kwargs["language"]
-
+    @model_validator(mode="before")
+    @classmethod
+    def set_metadata_and_coordinates(cls, values: dict[str, Any]) -> dict[str, Any]:
         if (
-            "zone_id" in kwargs
-            and "region_id" in kwargs
-            and kwargs["zone_id"] is not None
-            and kwargs["region_id"] is not None
+            not (values.get("zone_id") and values.get("region_id"))
+            and "coordinates" not in values
         ):
-            self.zone_id = kwargs["zone_id"]
-            self.region_id = kwargs["region_id"].upper()
-        else:
-            self.zone_id = None
-            self.region_id = None
-            self.coordinates = kwargs["coordinates"]
-
-        self.metadata = MetaData(ATTRIBUTION[self.language])
-        self.region_name = None
-        self.current = None
-        self.current_timestamp = None
-        self.forecasts = dict(daily={}, hourly={})
+            raise ValueError("zone_id and region_id or coordinates not specified.")
+        if "coordinates" in values:
+            values["coordinates"] = {
+                "lat": values["coordinates"][0],
+                "lon": values["coordinates"][1],
+            }
+        if "language" in values:
+            values["metadata"] = MetaData(attribution=ATTRIBUTION[values["language"]])
+        return values
 
     async def get_aqhi_data(self, url):
         async with ClientSession(raise_for_status=True) as session:
@@ -176,7 +154,8 @@ class ECAirQuality:
         # Find closest site if not identified
 
         if not (self.zone_id and self.region_id):
-            closest = await find_closest_region(self.language, *self.coordinates)
+            lat, lon = (self.coordinates.lat, self.coordinates.lon)
+            closest = await find_closest_region(self.language, lat, lon)
             self.zone_id = closest["abbreviation"]
             self.region_id = closest["cgndb"]
             LOG.debug(
@@ -191,9 +170,7 @@ class ECAirQuality:
         if aqhi_current is not None:
             # Update region name
             element = aqhi_current.find("region")
-            self.region_name = element.attrib[
-                "name{lang}".format(lang=self.language.title())
-            ]
+            self.region_name = element.attrib[f"name{self.language.title()}"]
             self.metadata.location = self.region_name
 
             # Update AQHI current condition

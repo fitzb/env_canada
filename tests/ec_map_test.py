@@ -1,13 +1,14 @@
 import asyncio
 from datetime import datetime
 from io import BytesIO
-import pytest
-from PIL import Image
 from unittest.mock import patch
 
-from env_canada import ECMap
-from voluptuous import error
+import pytest
+from PIL import Image
+from pydantic import ValidationError
 from syrupy.assertion import SnapshotAssertion
+
+from env_canada import ECMap
 
 
 # Test fixtures
@@ -82,29 +83,29 @@ class TestECMapInitialization:
     def test_invalid_layer_combinations(self):
         """Test edge cases for layer validation"""
         # Invalid layer name
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), layer="invalid_layer")
 
     def test_parameter_validation(self):
         """Test comprehensive parameter validation"""
         # Invalid coordinates - longitude > 180 (this actually validates)
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, 181), layer="rain")
 
         # Invalid radius - too small
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), radius=5, layer="rain")
 
         # Invalid opacity - > 100
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), layer_opacity=101, layer="rain")
 
         # Invalid opacity - < 0
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), layer_opacity=-1, layer="rain")
 
         # Invalid width/height
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), width=5, layer="rain")
 
     def test_bounding_box_math_errors(self):
@@ -112,9 +113,10 @@ class TestECMapInitialization:
         # These coordinates are valid per schema but cause math errors in bounding box calc
         # Should raise ValueError, not voluptuous error
         with pytest.raises(ValueError):
-            ECMap(
+            ec_map = ECMap(
                 coordinates=(90, -100), layer="rain"
             )  # cos(90°) = 0, causes division by zero
+            _bbox = ec_map.bbox
 
     def test_edge_case_coordinates(self):
         """Test edge case coordinates that work with bounding box computation"""
@@ -357,5 +359,5 @@ def test_validate_layers():
     assert map_obj.layer == "snow"
 
     # Invalid layer
-    with pytest.raises(error.MultipleInvalid):
+    with pytest.raises(ValidationError):
         ECMap(coordinates=(50, -100), layer="invalid_layer")

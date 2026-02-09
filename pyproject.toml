@@ -4,29 +4,25 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "env_canada"
-description="A package to access meteorological data from Environment Canada"
-version="0.12.4"
-authors = [
-  {name = "Michael Davie", email = "michael.davie@gmail.com"},
-]
-maintainers = [
-    {name = "Michael Davie", email = "michael.davie@gmail.com"},
-]
+description = "A package to access meteorological data from Environment Canada"
+version = "0.12.4"
+authors = [{ name = "Michael Davie", email = "michael.davie@gmail.com" }]
+maintainers = [{ name = "Michael Davie", email = "michael.davie@gmail.com" }]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
 ]
 dependencies = [
-    "aiohttp >=3.9.0",
-    "geopy >= 2.3.0",
-    "lxml >= 5.3.0",
-    "pandas >=2.2.3",
-    "Pillow >=10.0.1",
-    "python-dateutil >= 2.9",
-    "voluptuous >= 0.15.2",
+  "aiohttp >=3.9.0",
+  "geopy >= 2.3.0",
+  "lxml >= 5.3.0",
+  "pandas >=2.2.3",
+  "Pillow >=10.0.1",
+  "pydantic>=2.12.5",
+  "python-dateutil >= 2.9",
 ]
 
 [project.urls]
@@ -41,21 +37,17 @@ default-groups = ["dev", "lint", "test"]
 
 [dependency-groups]
 dev = [
-    "colorlog >=6.8",
-    "lxml-stubs >= 0.5.1",
-    "pandas-stubs >= 2.2.3",
-    "types-python-dateutil >= 2.9",
+  "colorlog >=6.8",
+  "lxml-stubs >= 0.5.1",
+  "pandas-stubs >= 2.2.3",
+  "types-python-dateutil >= 2.9",
 ]
-lint = [
-    "mypy >=1.11",
-    "pylint >=3.2",
-    "ruff >=0.9.1",
-]
+lint = ["mypy >=1.11", "pylint >=3.2", "ruff >=0.9.1"]
 test = [
-    "pytest >=8.3",
-    "pytest-asyncio >=0.23",
-    "syrupy >=4.8.1",
-    "freezegun >= 1.5.1",
+  "pytest >=8.3",
+  "pytest-asyncio >=0.23",
+  "syrupy >=4.8.1",
+  "freezegun >= 1.5.1",
 ]
 
 [tool.pytest.ini_options]
@@ -69,5 +61,19 @@ packages = ["env_canada"]
 env_canada = ["*.pil", "*.pbm"]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "B", "T201", "PD", "RUF", "ERA", "LOG", "G"]
+select = [
+  "E4",
+  "E7",
+  "E9",
+  "F",
+  "B",
+  "T201",
+  "PD",
+  "RUF",
+  "ERA",
+  "LOG",
+  "G",
+  "UP",
+  "I",
+]
 ignore = ["ERA001"]
