@@ -9,19 +9,19 @@ from env_canada import ECHistorical, ECHistoricalRange
 @pytest.mark.parametrize(
     "init_parameters",
     [
-        {"station_id": 48370, "year": 2021},
-        {"station_id": 48370, "year": 2021, "language": "english"},
-        {"station_id": 48370, "year": 2021, "language": "french"},
-        {"station_id": 48370, "year": 2021, "format": "csv"},
-        {"station_id": 48370, "year": 2021, "format": "xml"},
+        {"station_id": 1096453, "year": 2021},
+        {"station_id": 1096453, "year": 2021, "language": "english"},
+        {"station_id": 1096453, "year": 2021, "language": "french"},
+        {"station_id": 1096453, "year": 2021, "format": "csv"},
+        {"station_id": 1096453, "year": 2021, "format": "xml"},
         {
-            "station_id": 48370,
+            "station_id": 1096453,
             "year": 2021,
             "month": 5,
             "format": "xml",
             "timeframe": 1,
         },
-        {"station_id": 48370, "year": 2021, "format": "csv", "timeframe": 1},
+        {"station_id": 1096453, "year": 2021, "format": "csv", "timeframe": 1},
     ],
 )
 def test_echistorical(init_parameters):
@@ -31,7 +31,7 @@ def test_echistorical(init_parameters):
 
 @pytest.fixture()
 def test_historical():
-    return ECHistorical(station_id=48370, year=2021)
+    return ECHistorical(station_id=1096453, year=2021)
 
 
 def test_update(test_historical):
@@ -43,10 +43,10 @@ def test_update(test_historical):
 @pytest.mark.parametrize(
     "station_id,timeframe,startdate,enddate",
     [
-        (10761, "daily", datetime(2022, 1, 1), datetime(2022, 12, 31)),
-        (10761, "daily", datetime(2022, 1, 1), datetime(2023, 12, 31)),
-        (10761, "daily", datetime(2022, 1, 1), datetime(2022, 11, 30)),
-        (10761, "hourly", datetime(2022, 1, 1), datetime(2022, 2, 3, 23, 59, 59)),
+        (1096453, "daily", datetime(2022, 1, 1), datetime(2022, 12, 31)),
+        (1096453, "daily", datetime(2022, 1, 1), datetime(2023, 12, 31)),
+        (1096453, "daily", datetime(2022, 1, 1), datetime(2022, 11, 30)),
+        (1096453, "hourly", datetime(2022, 1, 1), datetime(2022, 2, 3, 23, 59, 59)),
     ],
 )
 def test_historical_number_values(station_id, timeframe, startdate, enddate):

@@ -178,19 +178,14 @@ async def get_historical_stations(
         stations = {}
         for station_req_form in station_req_forms:
             station = {}
-            station_name = station_req_form.xpath(
+            station_table = station_req_form.xpath(
                 './/div[@class="col-md-10 col-sm-8 col-xs-8"]'
-            )[0].text
-            station["prov"] = station_req_form.xpath(
-                './/div[@class="col-md-10 col-sm-8 col-xs-8"]'
-            )[1].text
-            station["proximity"] = float(
-                station_req_form.xpath('.//div[@class="col-md-10 col-sm-8 col-xs-8"]')[
-                    2
-                ].text
             )
+            station_name = station_table[0].text
+            station["prov"] = station_table[1].text
+            station["proximity"] = float(station_table[2].text)
             station["id"] = station_req_form.find(
-                "input[@name='StationID']"
+                "input[@name='climate_id']"
             ).attrib.get("value")
             station["hlyRange"] = station_req_form.find(
                 "input[@name='hlyRange']"
@@ -219,6 +214,7 @@ class ECHistorical:
                     int, vol.Range(1840, datetime.today().year)
                 ),
                 vol.Required("month", default=1): vol.All(int, vol.Range(1, 12)),
+                vol.Required("day", default=1): vol.All(int, vol.Range(1, 31)),
                 vol.Required("language", default="english"): vol.In(
                     ["english", "french"]
                 ),
@@ -233,6 +229,7 @@ class ECHistorical:
         self.timeframe = kwargs["timeframe"]
         self.year = kwargs["year"]
         self.month = kwargs["month"]
+        self.day = kwargs["day"]
         self.language = kwargs["language"]
         self.format = kwargs["format"]
         self.submit = "Download+Data"
@@ -244,9 +241,10 @@ class ECHistorical:
         """Get the historical data from Environment Canada."""
 
         params = {
-            "stationID": self.station_id,
+            "climate_id": self.station_id,
             "Year": self.year,
             "Month": self.month,
+            "Day": self.day,
             "format": self.format,
             "timeframe": self.timeframe,
             "submit": self.submit,
