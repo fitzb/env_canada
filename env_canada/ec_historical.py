@@ -168,8 +168,8 @@ async def get_historical_stations(
             headers={"User-Agent": USER_AGENT},
             timeout=10,
         )
-        result = await response.read()
 
+        result = await response.read()
         station_html = result.decode("utf-8")
         station_tree = lxml.html.fromstring(station_html)
         station_req_forms = station_tree.xpath(
@@ -177,31 +177,32 @@ async def get_historical_stations(
         )
 
         stations = {}
+        paths = {
+            "stationId": "input[@name='StationID']",
+            "climateId": "input[@name='climate_id']",
+            "hlyRange": "input[@name='hlyRange']",
+            "dlyRange": "input[@name='dlyRange']",
+            "mlyRange": "input[@name='mlyRange']",
+        }
+
         for station_req_form in station_req_forms:
             station = {}
-            station_name = station_req_form.xpath(
+            station_table = station_req_form.xpath(
                 './/div[@class="col-md-10 col-sm-8 col-xs-8"]'
-            )[0].text
-            station["prov"] = station_req_form.xpath(
-                './/div[@class="col-md-10 col-sm-8 col-xs-8"]'
-            )[1].text
-            station["proximity"] = float(
-                station_req_form.xpath('.//div[@class="col-md-10 col-sm-8 col-xs-8"]')[
-                    2
-                ].text
             )
-            station["id"] = station_req_form.find(
-                "input[@name='StationID']"
-            ).attrib.get("value")
-            station["hlyRange"] = station_req_form.find(
-                "input[@name='hlyRange']"
-            ).attrib.get("value")
-            station["dlyRange"] = station_req_form.find(
-                "input[@name='dlyRange']"
-            ).attrib.get("value")
-            station["mlyRange"] = station_req_form.find(
-                "input[@name='mlyRange']"
-            ).attrib.get("value")
+            station_name = station_table[0].text
+            prov = station_table[1].text
+            proximity = station_table[2].text
+            station["prov"] = prov
+            station["proximity"] = proximity
+            for attrib, path in paths.items():
+                data = station_req_form.xpath(path)
+                if data:
+                    station[attrib] = data[0].attrib.get("value")
+            stationid = station.get("stationId", station.get("climateId"))
+            station["id"] = stationid
+            station.pop("stationId", None)
+            station.pop("climateId", None)
             stations[station_name] = station
 
         return stations
@@ -213,6 +214,7 @@ class ECHistorical(BaseModel):
     station_id: int
     year: int = Field(..., ge=1840, le=datetime.today().year)
     month: int = Field(1, ge=1, le=12)
+    day: int = Field(1, ge=1, le=31)
     language: Literal["english", "french"] = Field("english")
     format: Literal["xml", "csv"] = Field("xml")
     timeframe: Literal[1, 2] = Field(2)
@@ -224,9 +226,10 @@ class ECHistorical(BaseModel):
         """Get the historical data from Environment Canada."""
 
         params = {
-            "stationID": self.station_id,
+            "climate_id": self.station_id,
             "Year": self.year,
             "Month": self.month,
+            "Day": self.day,
             "format": self.format,
             "timeframe": self.timeframe,
             "submit": self.submit,
@@ -255,7 +258,6 @@ class ECHistorical(BaseModel):
 
                 # first row of data
                 firstrow = next(reader)
-
                 self.metadata = {
                     "longitude": firstrow[0],
                     "latitude": firstrow[1],
