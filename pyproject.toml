@@ -4,14 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "env_canada"
-description="A package to access meteorological data from Environment Canada"
-version="0.13.2"
-authors = [
-  {name = "Michael Davie", email = "michael.davie@gmail.com"},
-]
-maintainers = [
-    {name = "Michael Davie", email = "michael.davie@gmail.com"},
-]
+description = "A package to access meteorological data from Environment Canada"
+version = "0.13.2"
+authors = [{ name = "Michael Davie", email = "michael.davie@gmail.com" }]
+maintainers = [{ name = "Michael Davie", email = "michael.davie@gmail.com" }]
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"

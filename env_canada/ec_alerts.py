@@ -2,7 +2,7 @@ import copy
 import logging
 import math
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 
 from aiohttp import ClientSession, ClientTimeout
 
@@ -60,7 +60,7 @@ __all__ = ["ECAlerts"]
 @dataclass
 class MetaData:
     attribution: str
-    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=timezone.utc)
+    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=UTC)
 
 
 class ECAlerts:
@@ -79,7 +79,7 @@ class ECAlerts:
 
     async def update(self):
         """Fetch current alerts from Environment Canada GeoMet WFS."""
-        from .ec_weather import ALERTS_INIT, ALERT_TYPE_TO_NAME  # lazy import
+        from .ec_weather import ALERT_TYPE_TO_NAME, ALERTS_INIT  # lazy import
 
         cache_key = f"alerts-{self.language}-{self.lat:.4f}-{self.lon:.4f}"
         cached = Cache.get(cache_key)
@@ -154,7 +154,7 @@ class ECAlerts:
             self.alerts[category]["value"].append(alert_dict)
 
         Cache.add(cache_key, (self.alerts, self.alert_features), CACHE_TTL)
-        self.metadata.timestamp = datetime.now(timezone.utc)
+        self.metadata.timestamp = datetime.now(UTC)
 
         LOG.debug(
             "update(): fetched %d alert features for (%f, %f)",
