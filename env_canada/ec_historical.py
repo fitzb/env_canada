@@ -192,7 +192,7 @@ async def get_historical_stations(
             )
             station_name = station_table[0].text
             prov = station_table[1].text
-            proximity = station_table[2].text
+            proximity = float(station_table[2].text)
             station["prov"] = prov
             station["proximity"] = proximity
             for attrib, path in paths.items():
