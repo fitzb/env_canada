@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## v0.14.1
+
+### Changes
+
+- **ECHistorical**: Add support for alphanumeric climate IDs (#132)
+
 ## v0.14.0
 
 ### Changes
