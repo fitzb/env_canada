@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+## v0.14.1
+
+### Changes
+
+- **ECHistorical**: Add support for alphanumeric climate IDs (#132)
+
+## v0.14.0
+
+### Changes
+
+- **ECHistorical**: Switch from station ID to climate ID for historical weather data queries
+
 ## v0.13.2
 
 ### Bug Fixes
