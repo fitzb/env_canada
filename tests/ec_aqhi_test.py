@@ -6,6 +6,7 @@ import pytest
 from env_canada import ECAirQuality, ec_aqhi
 
 
+@pytest.mark.slow
 def test_get_aqhi_regions():
     regions = asyncio.run(ec_aqhi.get_aqhi_regions("EN"))
     assert len(regions) > 0
@@ -25,6 +26,7 @@ def test_aqhi():
     return ECAirQuality(coordinates=(49.91, -97.24))
 
 
+@pytest.mark.slow
 def test_update(test_aqhi):
     asyncio.run(test_aqhi.update())
     assert isinstance(test_aqhi.current, float) or test_aqhi.current is None

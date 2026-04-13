@@ -6,6 +6,7 @@ import pytest
 from env_canada import ECHydro, ec_hydro
 
 
+@pytest.mark.slow
 def test_get_hydro_sites():
     sites = asyncio.run(ec_hydro.get_hydro_sites())
     assert len(sites) > 0
@@ -15,6 +16,7 @@ def test_get_hydro_sites():
     "init_parameters",
     [{"coordinates": (50, -100)}, {"province": "ON", "station": "02KF005"}],
 )
+@pytest.mark.slow
 def test_echydro(init_parameters):
     hydro = ECHydro(**init_parameters)
     assert isinstance(hydro, ECHydro)
@@ -30,6 +32,7 @@ def test_hydro():
     return ECHydro(province="ON", station="02KF005")
 
 
+@pytest.mark.slow
 def test_update(test_hydro):
     asyncio.run(test_hydro.update())
     assert isinstance(test_hydro.timestamp, datetime)
