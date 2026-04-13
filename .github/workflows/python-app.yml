@@ -20,4 +20,4 @@ jobs:
         with:
           enable-cache: true
       - name: Test
-        run: uv run --frozen pytest --snapshot-update  # Uses the Python version automatically installed by uv
+        run: uv run --frozen pytest  # Uses the Python version automatically installed by uv
