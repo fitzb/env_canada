@@ -2,7 +2,7 @@ import copy
 import logging
 import math
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 
 from aiohttp import ClientSession, ClientTimeout
 
@@ -60,7 +60,7 @@ __all__ = ["ECAlerts"]
 @dataclass
 class MetaData:
     attribution: str
-    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=timezone.utc)
+    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=UTC)
 
 
 class ECAlerts:
@@ -154,7 +154,7 @@ class ECAlerts:
             self.alerts[category]["value"].append(alert_dict)
 
         Cache.add(cache_key, (self.alerts, self.alert_features), CACHE_TTL)
-        self.metadata.timestamp = datetime.now(timezone.utc)
+        self.metadata.timestamp = datetime.now(UTC)
 
         LOG.debug(
             "update(): fetched %d alert features for (%f, %f)",

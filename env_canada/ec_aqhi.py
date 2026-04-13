@@ -1,6 +1,6 @@
 import logging
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, UTC
 
 import voluptuous as vol
 from aiohttp import ClientSession, ClientTimeout
@@ -40,14 +40,14 @@ __all__ = ["ECAirQuality"]
 
 def timestamp_to_datetime(timestamp):
     dt = datetime.strptime(timestamp, "%Y%m%d%H%M%S")
-    dt = dt.replace(tzinfo=timezone.utc)
+    dt = dt.replace(tzinfo=UTC)
     return dt
 
 
 async def get_aqhi_regions(language):
     """Get list of all AQHI regions from Environment Canada, for auto-config."""
-    zone_name_tag = "name_%s_CA" % language.lower()
-    region_name_tag = "name%s" % language.title()
+    zone_name_tag = f"name_{language.lower()}_CA"
+    region_name_tag = f"name{language.title()}"
 
     LOG.debug("get_aqhi_regions() started")
 
@@ -191,9 +191,7 @@ class ECAirQuality:
         if aqhi_current is not None:
             # Update region name
             element = aqhi_current.find("region")
-            self.region_name = element.attrib[
-                "name{lang}".format(lang=self.language.title())
-            ]
+            self.region_name = element.attrib[f"name{self.language.title()}"]
             self.metadata.location = self.region_name
 
             # Update AQHI current condition

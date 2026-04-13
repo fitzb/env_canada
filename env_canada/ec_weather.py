@@ -3,7 +3,7 @@ import csv
 import logging
 import re
 from dataclasses import dataclass
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from urllib.parse import urljoin
 
 import voluptuous as vol
@@ -43,7 +43,7 @@ __all__ = ["ECWeather", "ECWeatherUpdateFailed", "get_ec_sites_list"]
 @dataclass
 class MetaData:
     attribution: str
-    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=timezone.utc)
+    timestamp: datetime = datetime(1970, 1, 1, 0, 0, tzinfo=UTC)
     station: str | None = None
     location: str | None = None
     cache_returned_on_update: int = 0  # Resets to 0 after successful update
@@ -338,7 +338,7 @@ async def discover_weather_file_url(session, province_code, station_number, lang
     lang_suffix = "en" if language == "english" else "fr"
 
     # Start with current UTC hour and work backwards
-    current_utc = datetime.now(timezone.utc)
+    current_utc = datetime.now(UTC)
 
     for hours_back in range(3):  # Check current hour and 2 hours back
         check_time = current_utc - timedelta(hours=hours_back)
@@ -443,7 +443,7 @@ class ECWeather:
         """
         expiry = self.metadata.timestamp + timedelta(hours=self.max_data_age)
         self.metadata.last_update_error = msg
-        if expiry > datetime.now(timezone.utc):
+        if expiry > datetime.now(UTC):
             self.metadata.cache_returned_on_update += 1
             return
 
@@ -550,7 +550,7 @@ class ECWeather:
                 None, "Timestamp not found in retrieved weather; response ignored"
             )
         expiry = timestamp + timedelta(hours=self.max_data_age)
-        if expiry < datetime.now(timezone.utc):
+        if expiry < datetime.now(UTC):
             return self.handle_error(
                 None,
                 f"Outdated conditions returned from Environment Canada '{timestamp}'; not used",
