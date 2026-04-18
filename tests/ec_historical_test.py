@@ -34,6 +34,7 @@ def test_historical():
     return ECHistorical(station_id=1096453, year=2021)
 
 
+@pytest.mark.slow
 def test_update(test_historical):
     asyncio.run(test_historical.update())
     assert test_historical.metadata
@@ -49,6 +50,7 @@ def test_update(test_historical):
         (1096453, "hourly", datetime(2022, 1, 1), datetime(2022, 2, 3, 23, 59, 59)),
     ],
 )
+@pytest.mark.slow
 def test_historical_number_values(station_id, timeframe, startdate, enddate):
     if timeframe == "daily":
         number_of_data_points_per_day = 1

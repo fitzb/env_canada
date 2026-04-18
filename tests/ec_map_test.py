@@ -252,6 +252,7 @@ class TestECMapErrorHandling:
 class TestECMapCaching:
     """Test ECMap caching behavior"""
 
+    @pytest.mark.slow
     @patch("env_canada.ec_map.Cache")
     def test_basemap_caching_behavior(self, mock_cache):
         """Test that basemap caching is used appropriately"""
@@ -305,6 +306,7 @@ class TestECMapCaching:
         assert expected_legend_key in cache_calls
         assert mock_cache.add.call_count >= 2
 
+    @pytest.mark.slow
     @patch("env_canada.ec_map.Cache")
     def test_layer_image_caching(self, mock_cache):
         """Test that layer images are cached"""
