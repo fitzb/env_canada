@@ -3,11 +3,9 @@
   dict({
     'format': 'PNG',
     'has_transparency': True,
-<<<<<<< HEAD
     'mode': 'RGBA',
-=======
     'mode': 'P',
->>>>>>> eaeb9e8 (Replace voluptuous with pydantic. Add toml formatter. Move pyupgrade to ruff.)
+    'mode': 'RGBA',
     'size': tuple(
       800,
       800,
