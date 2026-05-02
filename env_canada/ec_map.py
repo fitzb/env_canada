@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import math
-import os
 from datetime import datetime, timedelta
 from io import BytesIO
 from typing import Any, Literal
@@ -10,7 +9,7 @@ import dateutil.parser
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
 from lxml import etree as et
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from pydantic import BaseModel, Field, computed_field, model_validator
 
 from .constants import USER_AGENT
@@ -161,13 +160,6 @@ class ECMap(BaseModel):
             "width": self.width,
             "height": self.height,
         }
-        self.layer_opacity = kwargs["layer_opacity"]
-
-        # Get overlay parameters
-        self.show_legend = kwargs["legend"]
-        self.show_timestamp = kwargs["timestamp"]
-
-        self.timestamp = None
 
     def _get_cache_prefix(self):
         """Generate a location-specific cache prefix based on bounding box."""
