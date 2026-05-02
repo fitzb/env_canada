@@ -3,7 +3,7 @@
   dict({
     'format': 'PNG',
     'has_transparency': True,
-    'mode': 'P',
+    'mode': 'RGBA',
     'size': tuple(
       800,
       800,

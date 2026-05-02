@@ -1,7 +1,6 @@
 import asyncio
 import logging
 import math
-import os
 from datetime import datetime, timedelta
 from io import BytesIO
 from typing import Any, Literal
@@ -10,7 +9,7 @@ import dateutil.parser
 from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
 from lxml import etree as et
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 from pydantic import BaseModel, Field, computed_field, model_validator
 
 from .constants import USER_AGENT
