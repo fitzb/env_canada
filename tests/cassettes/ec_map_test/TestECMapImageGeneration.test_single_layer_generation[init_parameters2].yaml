@@ -1,0 +1,471 @@
+interactions:
+- request:
+    body: null
+    headers:
+      User-Agent:
+      - env_canada/0.15.0
+    method: GET
+    uri: https://geo.weather.gc.ca/geomet?lang=en&service=WMS&version=1.3.0&request=GetCapabilities&layer=Radar_1km_SfcPrecipType
+  response:
+    body:
+      string: "<?xml version='1.0' encoding=\"UTF-8\" standalone=\"no\" ?>\n<WMS_Capabilities
+        version=\"1.3.0\" updateSequence=\"2026-05-16T03:24:01Z\"  xmlns=\"http://www.opengis.net/wms\"
+        \  xmlns:sld=\"http://www.opengis.net/sld\"   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"
+        \  xmlns:ms=\"http://mapserver.gis.umn.edu/mapserver\"   xsi:schemaLocation=\"http://www.opengis.net/wms
+        http://schemas.opengis.net/wms/1.3.0/capabilities_1_3_0.xsd  http://www.opengis.net/sld
+        http://schemas.opengis.net/sld/1.1.0/sld_capabilities.xsd  http://mapserver.gis.umn.edu/mapserver
+        https://geo.weather.gc.ca/geomet?service=WMS&amp;version=1.3.0&amp;request=GetSchemaExtension\">\n<Service>\n
+        \ <Name>WMS</Name>\n  <Title>MSC GeoMet \u2014 GeoMet-Weather 2.38.1</Title>\n
+        \ <Abstract>GeoMet-Weather provides public access to the Meteorological Service
+        of Canada (MSC) and Environment and Climate Change Canada (ECCC) data via
+        interoperable web services and application programming interfaces (API). Through
+        open standards, users can freely and quickly access thousands of real-time
+        and archived weather, climate and water datasets and products and integrate
+        them in their domain-specific applications and decision support systems. Users
+        can build mobile apps, create interactive web maps, and display and animate
+        MSC data in desktop software. MSC GeoMet also enables on demand raw data clipping
+        and reprojection, on demand format conversion and custom visualization.</Abstract>\n
+        \ <KeywordList>\n      <Keyword>Weather</Keyword>\n      <Keyword>Meteorology</Keyword>\n
+        \     <Keyword>Climate</Keyword>\n      <Keyword>Forecasting</Keyword>\n      <Keyword>Floods</Keyword>\n
+        \     <Keyword>Weather alerts</Keyword>\n      <Keyword>Storms</Keyword>\n
+        \     <Keyword>Wind</Keyword>\n      <Keyword>Temperature</Keyword>\n      <Keyword>Precipitations</Keyword>\n
+        \     <Keyword>Snow</Keyword>\n      <Keyword>Ice</Keyword>\n  </KeywordList>\n
+        \ <OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://eccc-msc.github.io/open-data/msc-geomet/readme_en/\"/>\n
+        \ <ContactInformation>\n    <ContactPersonPrimary>\n      <ContactPerson>National
+        Inquiry Response Team</ContactPerson>\n      <ContactOrganization>Government
+        of Canada, Environment and Climate Change Canada, Meteorological Service of
+        Canada</ContactOrganization>\n    </ContactPersonPrimary>\n      <ContactPosition>Service
+        Channel</ContactPosition>\n    <ContactAddress>\n        <AddressType>postal</AddressType>\n
+        \       <Address>77 Westmorland Street, Suite 260</Address>\n        <City>Fredericton</City>\n
+        \       <StateOrProvince>New Brunswick</StateOrProvince>\n        <PostCode>E3B
+        6Z3</PostCode>\n        <Country>Canada</Country>\n    </ContactAddress>\n
+        \     <ContactVoiceTelephone>None</ContactVoiceTelephone>\n      <ContactFacsimileTelephone>+01-506-451-6010</ContactFacsimileTelephone>\n
+        \ <ContactElectronicMailAddress>ecweather-meteo@ec.gc.ca</ContactElectronicMailAddress>\n
+        \ </ContactInformation>\n  <Fees>None</Fees>\n  <AccessConstraints>None</AccessConstraints>\n
+        \ <MaxWidth>16384</MaxWidth>\n  <MaxHeight>16384</MaxHeight>\n</Service>\n\n<Capability>\n
+        \ <Request>\n    <GetCapabilities>\n      <Format>text/xml</Format>\n      <DCPType>\n
+        \       <HTTP>\n          <Get><OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Get>\n          <Post><OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Post>\n
+        \       </HTTP>\n      </DCPType>\n    </GetCapabilities>\n    <GetMap>\n
+        \     <Format>image/png</Format>\n      <Format>image/jpeg</Format>\n      <Format>image/webp</Format>\n
+        \     <DCPType>\n        <HTTP>\n          <Get><OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Get>\n          <Post><OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Post>\n
+        \       </HTTP>\n      </DCPType>\n    </GetMap>\n    <GetFeatureInfo>\n      <Format>text/plain</Format>\n
+        \     <Format>application/json</Format>\n      <Format>application/vnd.ogc.gml</Format>\n
+        \     <DCPType>\n        <HTTP>\n          <Get><OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Get>\n          <Post><OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Post>\n
+        \       </HTTP>\n      </DCPType>\n    </GetFeatureInfo>\n    <sld:DescribeLayer>\n
+        \     <Format>text/xml</Format>\n      <DCPType>\n        <HTTP>\n          <Get><OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Get>\n
+        \         <Post><OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Post>\n        </HTTP>\n
+        \     </DCPType>\n    </sld:DescribeLayer>\n    <sld:GetLegendGraphic>\n      <Format>image/png</Format>\n
+        \     <Format>image/jpeg</Format>\n      <Format>image/png; mode=8bit</Format>\n
+        \     <Format>image/vnd.jpeg-png</Format>\n      <Format>image/vnd.jpeg-png8</Format>\n
+        \     <DCPType>\n        <HTTP>\n          <Get><OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Get>\n          <Post><OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Post>\n
+        \       </HTTP>\n      </DCPType>\n    </sld:GetLegendGraphic>\n    <ms:GetStyles>\n
+        \     <Format>text/xml</Format>\n      <DCPType>\n        <HTTP>\n          <Get><OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Get>\n
+        \         <Post><OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://geo.weather.gc.ca/geomet?\"/></Post>\n        </HTTP>\n
+        \     </DCPType>\n    </ms:GetStyles>\n  </Request>\n  <Exception>\n    <Format>XML</Format>\n
+        \   <Format>INIMAGE</Format>\n    <Format>BLANK</Format>\n  </Exception>\n
+        \ <sld:UserDefinedSymbolization SupportSLD=\"1\" UserLayer=\"0\" UserStyle=\"1\"
+        RemoteWFS=\"0\" InlineFeature=\"0\" RemoteWCS=\"0\"/>\n  <Layer queryable=\"1\">\n
+        \   <Title>MSC GeoMet \u2014 GeoMet-Weather 2.38.1</Title>\n    <Abstract>GeoMet-Weather
+        provides public access to the Meteorological Service of Canada (MSC) and Environment
+        and Climate Change Canada (ECCC) data via interoperable web services and application
+        programming interfaces (API). Through open standards, users can freely and
+        quickly access thousands of real-time and archived weather, climate and water
+        datasets and products and integrate them in their domain-specific applications
+        and decision support systems. Users can build mobile apps, create interactive
+        web maps, and display and animate MSC data in desktop software. MSC GeoMet
+        also enables on demand raw data clipping and reprojection, on demand format
+        conversion and custom visualization.</Abstract>\n    <KeywordList>\n        <Keyword>Weather</Keyword>\n
+        \       <Keyword>Meteorology</Keyword>\n        <Keyword>Climate</Keyword>\n
+        \       <Keyword>Forecasting</Keyword>\n        <Keyword>Floods</Keyword>\n
+        \       <Keyword>Weather alerts</Keyword>\n        <Keyword>Storms</Keyword>\n
+        \       <Keyword>Wind</Keyword>\n        <Keyword>Temperature</Keyword>\n
+        \       <Keyword>Precipitations</Keyword>\n        <Keyword>Snow</Keyword>\n
+        \       <Keyword>Ice</Keyword>\n    </KeywordList>\n    <CRS>EPSG:4326</CRS>\n
+        \   <CRS>EPSG:2294</CRS>\n    <CRS>EPSG:2295</CRS>\n    <CRS>EPSG:2950</CRS>\n
+        \   <CRS>EPSG:3005</CRS>\n    <CRS>EPSG:3408</CRS>\n    <CRS>EPSG:3410</CRS>\n
+        \   <CRS>EPSG:3571</CRS>\n    <CRS>EPSG:3572</CRS>\n    <CRS>EPSG:3573</CRS>\n
+        \   <CRS>EPSG:3574</CRS>\n    <CRS>EPSG:3575</CRS>\n    <CRS>EPSG:3576</CRS>\n
+        \   <CRS>EPSG:3776</CRS>\n    <CRS>EPSG:3857</CRS>\n    <CRS>EPSG:3978</CRS>\n
+        \   <CRS>EPSG:3995</CRS>\n    <CRS>EPSG:4267</CRS>\n    <CRS>EPSG:4269</CRS>\n
+        \   <CRS>EPSG:26707</CRS>\n    <CRS>EPSG:26708</CRS>\n    <CRS>EPSG:26709</CRS>\n
+        \   <CRS>EPSG:26710</CRS>\n    <CRS>EPSG:26711</CRS>\n    <CRS>EPSG:26712</CRS>\n
+        \   <CRS>EPSG:26713</CRS>\n    <CRS>EPSG:26714</CRS>\n    <CRS>EPSG:26715</CRS>\n
+        \   <CRS>EPSG:26716</CRS>\n    <CRS>EPSG:26717</CRS>\n    <CRS>EPSG:26718</CRS>\n
+        \   <CRS>EPSG:26719</CRS>\n    <CRS>EPSG:26720</CRS>\n    <CRS>EPSG:26721</CRS>\n
+        \   <CRS>EPSG:26722</CRS>\n    <CRS>EPSG:26907</CRS>\n    <CRS>EPSG:26908</CRS>\n
+        \   <CRS>EPSG:26909</CRS>\n    <CRS>EPSG:26910</CRS>\n    <CRS>EPSG:26911</CRS>\n
+        \   <CRS>EPSG:26912</CRS>\n    <CRS>EPSG:26913</CRS>\n    <CRS>EPSG:26914</CRS>\n
+        \   <CRS>EPSG:26915</CRS>\n    <CRS>EPSG:26916</CRS>\n    <CRS>EPSG:26917</CRS>\n
+        \   <CRS>EPSG:26918</CRS>\n    <CRS>EPSG:26919</CRS>\n    <CRS>EPSG:26920</CRS>\n
+        \   <CRS>EPSG:26921</CRS>\n    <CRS>EPSG:26922</CRS>\n    <CRS>EPSG:32187</CRS>\n
+        \   <CRS>EPSG:32188</CRS>\n    <CRS>EPSG:32198</CRS>\n    <CRS>EPSG:32661</CRS>\n
+        \   <CRS>EPSG:42101</CRS>\n    <CRS>EPSG:42102</CRS>\n    <CRS>EPSG:42304</CRS>\n
+        \   <CRS>EPSG:102100</CRS>\n    <CRS>EPSG:102185</CRS>\n    <CRS>EPSG:900913</CRS>\n
+        \   <CRS>AUTO2:42003</CRS>\n    <EX_GeographicBoundingBox>\n        <westBoundLongitude>-180.000000</westBoundLongitude>\n
+        \       <eastBoundLongitude>180.000000</eastBoundLongitude>\n        <southBoundLatitude>-90.000000</southBoundLatitude>\n
+        \       <northBoundLatitude>90.000000</northBoundLatitude>\n    </EX_GeographicBoundingBox>\n
+        \   <BoundingBox CRS=\"EPSG:4326\"\n                minx=\"-90.000000\" miny=\"-180.000000\"
+        maxx=\"90.000000\" maxy=\"180.000000\" />\n    <Attribution>\n        <Title>Government
+        of Canada, Environment and Climate Change Canada, Meteorological Service of
+        Canada</Title>\n        <OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://www.canada.ca/en/services/environment/weather.html\"/>\n
+        \       <LogoURL width=\"400\" height=\"258\">\n             <Format>image/jpeg</Format>\n
+        \            <OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:type=\"simple\" xlink:href=\"https://ec.gc.ca/meteo-weather/C0D9B3D8-D256-407D-A68F-C606D703105E/X-20130131132801908.jpg\"/>\n
+        \         </LogoURL>\n    </Attribution>\n    <Layer queryable=\"1\">\n      <Name>Weather
+        Radar</Name>\n      <Title>Weather Radar</Title>\n      <Layer queryable=\"1\">\n
+        \       <Name>North American radar surface precipitation type [1 km]</Name>\n
+        \       <Title>North American radar surface precipitation type [1 km]</Title>\n
+        \       <Layer queryable=\"1\" opaque=\"0\" cascaded=\"0\">\n        <Name>Radar_1km_SfcPrecipType</Name>\n
+        \       <Title>Radar surface precipitation type</Title>\n        <Abstract>This
+        product is a composite at 1 km resolution over the North American domain,
+        which, for areas with radar coverage, can distinguish occurrence and type
+        of precipitation and can recognize several levels of precipitation intensity.
+        This product uses as input two high-resolution radar composites namely a North
+        American composite cleaned using dual-polarization technology, another radar
+        composite of particle (precipitation) classification as well as the surface
+        temperature from the CMC High Regional Deterministic Prediction System (HRDPS)
+        model. The SPTP product is produced every 6 minutes.</Abstract>\n        <KeywordList>\n
+        \           <Keyword>Atmospheric conditions</Keyword>\n            <Keyword>Meteorology</Keyword>\n
+        \           <Keyword>Weather</Keyword>\n            <Keyword>Radar</Keyword>\n
+        \           <Keyword>Remote sensing</Keyword>\n            <Keyword>Weather</Keyword>\n
+        \       </KeywordList>\n        <CRS>EPSG:102979</CRS>\n        <EX_GeographicBoundingBox>\n
+        \           <westBoundLongitude>-180.000000</westBoundLongitude>\n            <eastBoundLongitude>180.000000</eastBoundLongitude>\n
+        \           <southBoundLatitude>18.354306</southBoundLatitude>\n            <northBoundLatitude>90.000000</northBoundLatitude>\n
+        \       </EX_GeographicBoundingBox>\n        <BoundingBox CRS=\"EPSG:102979\"\n
+        \                   minx=\"-2.70512e+06\" miny=\"-7.68482e+06\" maxx=\"3.81896e+06\"
+        maxy=\"2.10176e+06\" />\n        <Dimension name=\"time\" units=\"ISO8601\"
+        default=\"2026-05-16T03:12:00Z\" nearestValue=\"0\">2026-05-16T00:12:00Z/2026-05-16T03:12:00Z/PT6M</Dimension>\n
+        \       <AuthorityURL name=\"msc\">\n          <OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\"
+        xlink:href=\"https://dd.weather.gc.ca\"/>\n        </AuthorityURL>\n        <Identifier
+        authority=\"msc\">urn:x-msc-smc:md:weather-meteo::radar.sfcpreciptype</Identifier>\n
+        \       <MetadataURL type=\"TC211\">\n          <Format>text/xml</Format>\n
+        \         <OnlineResource xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:type=\"simple\"
+        xlink:href=\"https://csw.open.canada.ca/geonetwork/srv/csw?service=CSW&amp;version=2.0.2&amp;request=GetRecordById&amp;outputschema=csw:IsoRecord&amp;elementsetname=full&amp;id=37d76d67-0304-4e79-8a56-a839097ddd3d\"/>\n
+        \       </MetadataURL>\n        <Style>\n          <Name>SfcPrecipType_Dis</Name>\n
+        \         <Title>SfcPrecipType_Dis</Title>\n          <LegendURL width=\"215\"
+        height=\"201\">\n             <Format>image/png</Format>\n             <OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:type=\"simple\" xlink:href=\"https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=Radar_1km_SfcPrecipType&amp;format=image/png&amp;STYLE=SfcPrecipType_Dis\"/>\n
+        \         </LegendURL>\n        </Style>\n        <Style>\n          <Name>SfcPrecipType_Dis_Fr</Name>\n
+        \         <Title>SfcPrecipType_Dis_Fr</Title>\n          <LegendURL width=\"215\"
+        height=\"201\">\n             <Format>image/png</Format>\n             <OnlineResource
+        xmlns:xlink=\"http://www.w3.org/1999/xlink\" xlink:type=\"simple\" xlink:href=\"https://geo.weather.gc.ca/geomet?version=1.3.0&amp;service=WMS&amp;request=GetLegendGraphic&amp;sld_version=1.1.0&amp;layer=Radar_1km_SfcPrecipType&amp;format=image/png&amp;STYLE=SfcPrecipType_Dis_Fr\"/>\n
+        \         </LegendURL>\n        </Style>\n        </Layer>\n      </Layer>\n
+        \   </Layer>\n  </Layer>\n</Capability>\n</WMS_Capabilities>\n"
+    headers:
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Access-Control-Allow-Methods:
+      - POST, GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=360
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - text/xml; charset=UTF-8
+      Date:
+      - Sat, 16 May 2026 03:24:18 GMT
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=63072000; preload
+      - max-age=63072000; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-GeoMet-Status:
+      - 200 OK
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      User-Agent:
+      - env_canada/0.15.0
+    method: GET
+    uri: https://geo.weather.gc.ca/geomet?service=WMS&version=1.3.0&request=GetMap&crs=EPSG:4326&format=image/png&transparent=true&bbox=48.20136,-102.79884,51.79864,-97.20116&width=800&height=800&layers=Radar_1km_SfcPrecipType&time=2026-05-16T03:12:00Z
+  response:
+    body:
+      string: !!binary |
+        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
+        9XGnMY3auW1HWmugp7zaFv7PsivWQfWc9I5Z9L7ob0IkJVAo+oBmN54nRNWYifdE75o4WyOttWOt
+        PW9ue+Zl1nyu6seOzsZ6ZZt+qxjT3j7dve6qx75Vf/Z5O6tHAgIbym48T45v6KOIzXX2OciuIWtt
+        37mOGK1zVp+q68+Oywqfbd2t7WdjevXzaB+OylrxLFWtp6Oxuio/0/6qxOPJzxBsKfsQrT5szNxU
+        V9f/5DHeLXrHPPp9bz2ZMleP4RNjZD6O5qa3nln9qK4/Oy4zja7/lW3/3d6rn8++G63r8/OZ6++q
+        vqr+VM7tWxKQ3dY7NFVv3tUHhugLt7rcHfp2dzu+KT7HMjq22TnKzu1VGdm2iv75G52r3vur11/r
+        vtHv7zS6/le2/Xd7I9dEn/3ecmY9R9kxr5ib0ft7/h3IUfSO1Ujbj8rbZb1DU/Um3trwquut3kAr
+        yr7rhdgqd3b7nxyfYxQds9E5y8ztWZvO2h7tg1j3J3it+6vaHb1vdr8q3D3XK0Wf9ei8nd13x3MU
+        GfvqOYqM3ZndEpCz76Nz8qbngk1lN4rZm3mrvtbno+MwWs5RmbNiVvs+v7+rP0+OszFb5Xc7sm1d
+        PZZPiJH5qHQ2p9F2R9dAVftWuHuud1S1T61+jlrtaX2e6dfnd60yqn4TEv1TrllzmL0OhmQ2itUb
+        zizV7aveqHcYuxl9ekt8jtHZ2EU/nzFvvXW3rls99m+IqrnN1tP6vKJ9vfdWy47VrLnsGdPR+Tjr
+        e285q9f9WXtan2f61Num3ROQs373lgNdel5Uqzecp1jxYrvLrBf3k6I1JmffRz+vNFp367rVc/GG
+        6J3T7NyMznG2nbtbMZc9Y9m7Xs7ui7Z9t3Xf27+rezP3ROzym5Ds3Pb2F7pkNofshvLti3rVi+oO
+        s19KT4zeMZwxP6NmHQ6eFiv7NDr2Z+1tXdf7/ZOtntMV8x9t413rubffkf5F66yag7clIEffz1qv
+        cCqymM9+/jYrN+Vd3PVi3yF6x2bGuI+qatvqOZkxp7uup6q5WnX/SqvndOb8f5aXLf+u9Vy1/nZ4
+        llYlINm5zux3Pfdeic7VLnPKBiyAft/4EN31Yt8pzsagNUZzZyIm25bsC271XGTblRmDu/oya72M
+        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
+        BAAAOux2SJeAAADAi+1wSM/+aVUkju65r0cAAMCh3sN55W8aJCAAAPAlMofz6OG/MqnprdOfYgEA
+        wIONJAMz65CAAADAC1UkBT31jbYjUiYAALAZCQgAAHC7kcRgZnsiiYcEBAAAHkYCAgAA3ObsH3v/
+        /v9n/ClW5B+ZX9VxV0IEAAAUenIC0lM/AADwEL0JiN9SAAAAaRIQAABgW5IOAADgNhIQAAAAAAAA
+        AAAAAAAAAAAAAAAAnsV/QQsAALiNBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAACvzxzz/+XN0GAADgS1wlIH999xl3tg0AAHiJSFJxlIBIQgAAgLSRBERSAgAAlMkkHhIQAABg
+        iAQEAAAoFUkcJB4AAECJSPIgAQEAAIZU/eZDAgIAADTtnoBIbgAA4IWODvqRRKMqOfDbFQAA+CJP
+        SEAkJAAA8BK7Hf53aAMAADDJExMQiQgAADxUz59A3fWPzyUgAADwMhIQAADgFqPJR2UycFWeBAQA
+        AB7q9+F9NOGQgAAAAJcqE5Ad+gAAAGzs6vC+a8Lxacc2AQAAB96QgAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI/2fwF19rw0OPzSLgAAAABJRU5ErkJggg==
+    headers:
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Access-Control-Allow-Methods:
+      - POST, GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Cache-Control:
+      - max-age=360
+      Content-Type:
+      - image/png
+      Date:
+      - Sat, 16 May 2026 03:24:18 GMT
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=63072000; preload
+      - max-age=63072000; preload
+      Transfer-Encoding:
+      - chunked
+      X-GeoMet-Status:
+      - 200 OK
+    status:
+      code: 200
+      message: OK
+version: 1

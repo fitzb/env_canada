@@ -134,13 +134,13 @@ async def test_weather_exception_returns_cached_data():
     assert ecw.metadata.cache_returned_on_update == 0
 
 
-@pytest.mark.slow
+@pytest.mark.vcr
 def test_get_ec_sites():
     sites = asyncio.run(ec_weather.get_ec_sites())
     assert len(sites) > 0
 
 
-@pytest.mark.slow
+@pytest.mark.vcr
 def test_update_ec_weather():
     ecw, _ = setup_test({"station": "ON/s0000430"})
     asyncio.run(ecw.update())

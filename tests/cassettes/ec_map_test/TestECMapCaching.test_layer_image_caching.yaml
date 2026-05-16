@@ -1,0 +1,43 @@
+interactions:
+- request:
+    body: null
+    headers:
+      User-Agent:
+      - env_canada/0.15.0
+    method: GET
+    uri: https://geo.weather.gc.ca/geomet?service=WMS&version=1.3.0&request=GetMap&crs=EPSG:4326&format=image/png&transparent=true&bbox=48.20136,-102.79884,51.79864,-97.20116&width=800&height=800&layers=RADAR_1KM_RRAI&time=2025-02-13T16:54:00Z
+  response:
+    body:
+      string: "<?xml version='1.0' encoding=\"utf-8\"?>\n    <ogc:ServiceExceptionReport
+        version=\"1.3.0\"\n    xmlns:ogc=\"http://www.opengis.net/ogc\"\n    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n
+        \   xsi:schemaLocation=\"http://www.opengis.net/ogc\n    http://schemas.opengis.net/wms/1.3.0/exceptions_1_3_0.xsd\">\n
+        \   <ogc:ServiceException code=\"NoMatch\" locator=\"time\">temps en dehors
+        des heures valides / time outside valid hours</ogc:ServiceException>\n    </ogc:ServiceExceptionReport>"
+    headers:
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Access-Control-Allow-Methods:
+      - POST, GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Content-Encoding:
+      - gzip
+      Content-Type:
+      - text/xml
+      Date:
+      - Sat, 16 May 2026 03:24:21 GMT
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=63072000; preload
+      - max-age=63072000; preload
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept-Encoding
+      X-GeoMet-Status:
+      - 400 Bad Request
+    status:
+      code: 200
+      message: OK
+version: 1

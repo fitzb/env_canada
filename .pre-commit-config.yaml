@@ -17,6 +17,10 @@ repos:
       - id: name-tests-test
       - id: check-added-large-files
         args: ["--maxkb=1024"]
+        exclude: |
+          (?x)^(
+            tests/cassettes/
+          )
       - id: check-ast # checks if files parse as valid python
       - id: check-case-conflict # files that would conflict in case-insensitive filesystems
       - id: check-docstring-first # docstring before code
@@ -37,7 +41,7 @@ repos:
           - mdformat-gfm
           - mdformat-ruff
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.20.0
+    rev: v2.1.0
     hooks:
       - id: mypy
         additional_dependencies:
@@ -45,7 +49,7 @@ repos:
           - types-python-dateutil
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.15.9
+    rev: v0.15.13
     hooks:
       # Run the linter.
       - id: ruff-check

@@ -144,7 +144,7 @@ class TestECMapInitialization:
 class TestECMapImageGeneration:
     """Test ECMap image generation functionality"""
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     @pytest.mark.parametrize(
         "init_parameters",
         [
@@ -162,7 +162,7 @@ class TestECMapImageGeneration:
         image = Image.open(BytesIO(frame))
         assert image.format == "PNG"
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     @pytest.mark.parametrize(
         "layer",
         [
@@ -178,26 +178,26 @@ class TestECMapImageGeneration:
         image = Image.open(BytesIO(frame))
         assert image.format == "PNG"
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     def test_get_dimensions(self, test_map):
         dimensions = asyncio.run(test_map._get_dimensions())
         assert isinstance(dimensions[0], datetime) and isinstance(
             dimensions[1], datetime
         )
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     def test_get_latest_frame(self, test_map):
         frame = asyncio.run(test_map.get_latest_frame())
         image = Image.open(BytesIO(frame))
         assert image.format == "PNG"
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     def test_get_loop(self, test_map):
         loop = asyncio.run(test_map.get_loop())
         image = Image.open(BytesIO(loop))
         assert image.format == "GIF" and image.is_animated
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     def test_image_output_regression(self, snapshot: SnapshotAssertion):
         """Test image output hasn't changed unexpectedly"""
         map_obj = ECMap(
@@ -250,7 +250,7 @@ class TestECMapErrorHandling:
 class TestECMapCaching:
     """Test ECMap caching behavior"""
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     @patch("env_canada.ec_map.Cache")
     def test_basemap_caching_behavior(self, mock_cache):
         """Test that basemap caching is used appropriately"""
@@ -277,7 +277,7 @@ class TestECMapCaching:
                 assert legend.width == map_obj.width
                 assert legend.height > 0
 
-    @pytest.mark.slow
+    @pytest.mark.vcr
     @patch("env_canada.ec_map.Cache")
     def test_layer_image_caching(self, mock_cache):
         """Test that layer images are cached"""
