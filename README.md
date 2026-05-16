@@ -6,6 +6,16 @@
 
 This package provides access to various data sources published by [Environment and Climate Change Canada](https://www.canada.ca/en/environment-climate-change.html).
 
+## Installation
+
+Install the package from PyPI:
+
+```bash
+pip install env-canada
+```
+
+Then import the desired classes from `env_canada` as shown in the examples below.
+
 > [!IMPORTANT]
 > If you're using the library in a Jupyter notebook, replace `asyncio.run(...)` with `await ...` in the examples below. For example:
 >
@@ -61,7 +71,7 @@ ec_coords.alert_features
 ```
 
 > [!NOTE]
-> As of version 0.11.0, `ECWeather` automatically handles Environment Canada's new timestamped weather file URL structure (effective June 2025). The library dynamically discovers the most recent weather files, ensuring continued functionality during Environment Canada's infrastructure changes.
+> Since version 0.11.0, `ECWeather` automatically handles Environment Canada's new timestamped weather file URL structure (effective June 2025). The library dynamically discovers the most recent weather files, ensuring continued functionality during Environment Canada's infrastructure changes.
 
 ## Weather Alerts
 
@@ -252,12 +262,32 @@ import pandas as pd
 df = pd.read_csv(ec_en_csv.station_data)
 ```
 
-`ECHistoricalRange` provides historical weather data within a specific range and handles the update by itself.
+`ECHistoricalRange` provides historical weather data within a specific range and can return results as a DataFrame, XML, or CSV.
 
-The ECHistoricalRange object is instantiated with at least a station ID and a daterange.
-One could add language, and granularity (hourly, daily (default)).
+The `ECHistoricalRange` object is instantiated with at least a station ID and a `daterange`. You can also specify `language` and `timeframe` (`hourly` or `daily`, default `daily`).
 
-The data can then be used as pandas DataFrame, XML (requires pandas >=1.3.0) and csv
+```python
+import asyncio
+from datetime import datetime
+
+from env_canada import ECHistoricalRange
+
+range_obj = ECHistoricalRange(
+    station_id=31688,
+    daterange=(datetime(2020, 1, 1), datetime(2020, 1, 31)),
+    language="english",
+    timeframe="daily",
+)
+
+# Fetch the data and return a pandas DataFrame
+df = range_obj.get_data()
+
+# Export the same range as XML or CSV
+xml_data = range_obj.xml
+csv_data = range_obj.csv
+```
+
+The data can then be used as a pandas DataFrame, XML (requires pandas >=1.3.0), or CSV.
 
 For example :
 
@@ -310,6 +340,26 @@ the time provided.
 
 To have all the july 1st data in that case, one can provide a datarange without time: `datetime(2022, 7, 7)` instead
 of `datetime(2022, 7, 1, 12, 12)`
+
+# Testing
+
+The code uses pytest-recording and syrypy to test the code in isolation. Running the test locally will update the cassettes and the snapshot.
+
+```shell
+uv run pytest
+```
+
+To use the existing cassettes use:
+
+```shell
+uv run pytest --record-mode=once --snapshot-update
+```
+
+or force and update with:
+
+```shell
+uv run pytest --record-mode=all --snapshot-update
+```
 
 # License
 
