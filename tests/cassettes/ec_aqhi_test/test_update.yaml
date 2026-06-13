@@ -319,26 +319,28 @@ interactions:
     headers:
       Accept-Ranges:
       - bytes
+      Cache-Control:
+      - max-age=300
       Connection:
-      - close
-      Content-Encoding:
-      - gzip
+      - Upgrade
       Content-Length:
-      - '6396'
+      - '60677'
       Content-Type:
       - application/xml
       Date:
-      - Sat, 16 May 2026 03:24:13 GMT
+      - Tue, 19 May 2026 11:13:34 GMT
       Etag:
-      - '"ed05-632f85d7cc480-gzip"'
+      - '"ed05-632f85d7cc480"'
+      Expires:
+      - Tue, 19 May 2026 11:18:34 GMT
       Last-Modified:
       - Thu, 17 Apr 2025 12:16:02 GMT
       Server:
       - Apache
       Strict-Transport-Security:
       - max-age=63072000; preload
-      Vary:
-      - Accept-Encoding
+      Upgrade:
+      - h2,h2c
     status:
       code: 200
       message: OK
@@ -354,10 +356,10 @@ interactions:
       string: "<?xml version='1.0' encoding='utf-8'?>\n\n<conditionAirQuality productHeader=\"AQ_OBS\">\n\t<region
         nameEn=\"Winnipeg\" nameFr=\"Winnipeg\">GBEIN</region>\n\n\t<dateStamp name=\"aqObserved\"
         zoneEn=\"CDT\" zoneFr=\"HAC\">\n\t\t<year>2026</year>\n\t\t<month nameEn=\"May\"
-        nameFr=\"mai\">5</month>\n\t\t<day nameEn=\"Friday\" nameFr=\"vendredi\">15</day>\n\t\t<hour
-        clock=\"12h\" ampm=\"PM\">9</hour>\n\t\t<minute>00</minute>\n\t\t<second/>\n\t\t<UTCStamp>20260516020000</UTCStamp>\n\t\t<textSummary
-        lang=\"EN\">9:00 PM CDT Friday 15 May 2026</textSummary>\n\t\t<textSummary
-        lang=\"FR\">21h00 HAC vendredi 15 mai 2026</textSummary>\n\t</dateStamp>\n\n\t<airQualityHealthIndex>1.7</airQualityHealthIndex>\n\n\t<specialNotes/>\n</conditionAirQuality>\n"
+        nameFr=\"mai\">5</month>\n\t\t<day nameEn=\"Tuesday\" nameFr=\"mardi\">19</day>\n\t\t<hour
+        clock=\"12h\" ampm=\"AM\">5</hour>\n\t\t<minute>00</minute>\n\t\t<second/>\n\t\t<UTCStamp>20260519100000</UTCStamp>\n\t\t<textSummary
+        lang=\"EN\">5:00 AM CDT Tuesday 19 May 2026</textSummary>\n\t\t<textSummary
+        lang=\"FR\">5h00 HAC mardi 19 mai 2026</textSummary>\n\t</dateStamp>\n\n\t<airQualityHealthIndex>1.1</airQualityHealthIndex>\n\n\t<specialNotes/>\n</conditionAirQuality>\n"
     headers:
       Accept-Ranges:
       - bytes
@@ -366,17 +368,98 @@ interactions:
       Connection:
       - Upgrade
       Content-Length:
-      - '677'
+      - '672'
       Content-Type:
       - application/xml
       Date:
-      - Sat, 16 May 2026 03:24:13 GMT
+      - Tue, 19 May 2026 11:13:34 GMT
       Etag:
-      - '"2a5-651e5fbac5600"'
+      - '"2a0-6522909c053c0"'
       Expires:
-      - Sat, 16 May 2026 03:29:13 GMT
+      - Tue, 19 May 2026 11:18:34 GMT
       Last-Modified:
-      - Sat, 16 May 2026 02:21:12 GMT
+      - Tue, 19 May 2026 10:21:11 GMT
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=63072000; preload
+      Upgrade:
+      - h2,h2c
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      User-Agent:
+      - env_canada/0.15.0
+    method: GET
+    uri: https://dd.weather.gc.ca/today/air_quality/aqhi/pnr/forecast/realtime/xml/AQ_FCST_GBEIN_CURRENT.xml
+  response:
+    body:
+      string: "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n\n<forecastAirQuality
+        productHeader=\"AQ_FCST\" status=\"issued\">\n <region nameEn=\"Winnipeg\"
+        nameFr=\"Winnipeg\">GBEIN</region>\n<dateStamp name=\"aqForecastIssued\" zoneEn=\"CDT\"
+        zoneFr=\"HAC\">\n<year>2026</year>\n<month nameEn=\"May\" nameFr=\"mai\">5</month>\n<day
+        nameEn=\"Tuesday\" nameFr=\"mardi\">19</day>\n<hour clock=\"12h\" ampm=\"AM\">6</hour>\n<minute>0</minute>\n<second/>\n
+        <UTCStamp>20260519110000</UTCStamp>\n <textSummary lang=\"EN\">6:00 AM CDT
+        Tuesday 19 May 2026</textSummary>\n <textSummary lang=\"FR\">6h00 HAC mardi
+        19 mai 2026</textSummary>\n</dateStamp>\n<nextIssue>\n <UTCStamp>202605192200</UTCStamp>\n</nextIssue>\n<warningGroup>\n</warningGroup>\n
+        <forecastGroup>\n  <forecast periodID=\"1\">\n   <period forecastName=\"Today\"
+        lang=\"EN\">Tuesday</period>\n   <period forecastName=\"Aujourd'hui\" lang=\"FR\">mardi</period>\n
+        \  <airQualityHealthIndex>2</airQualityHealthIndex>\n</forecast>\n  <forecast
+        periodID=\"2\">\n   <period forecastName=\"Tonight\" lang=\"EN\">Tuesday night</period>\n
+        \  <period forecastName=\"Ce soir et cette nuit\" lang=\"FR\">mardi soir et
+        nuit</period>\n   <airQualityHealthIndex>2</airQualityHealthIndex>\n</forecast>\n
+        \ <forecast periodID=\"3\">\n   <period forecastName=\"Tomorrow\" lang=\"EN\">Wednesday</period>\n
+        \  <period forecastName=\"Demain\" lang=\"FR\">mercredi</period>\n   <airQualityHealthIndex>2</airQualityHealthIndex>\n</forecast>\n
+        \ <forecast periodID=\"4\">\n   <period forecastName=\"Tomorrow Night\" lang=\"EN\">Wednesday
+        night</period>\n   <period forecastName=\"Demain soir et nuit\" lang=\"FR\">mercredi
+        soir et nuit</period>\n   <airQualityHealthIndex>2</airQualityHealthIndex>\n</forecast>\n
+        </forecastGroup>\n<hourlyForecastGroup>\n   <hourlyForecast UTCTime=\"20260519110000\">1</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260519120000\">2</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260519130000\">2</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260519140000\">1</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260519150000\">1</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260519160000\">1</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260519170000\">1</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260519180000\">2</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260519190000\">1</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260519200000\">1</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260519210000\">1</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260519220000\">1</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260519230000\">1</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520000000\">1</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520010000\">1</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520020000\">1</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520030000\">1</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520040000\">1</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520050000\">1</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520060000\">1</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520070000\">2</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520080000\">2</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520090000\">2</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520100000\">2</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520110000\">2</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520120000\">2</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520130000\">2</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520140000\">2</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520150000\">2</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520160000\">2</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520170000\">2</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520180000\">2</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520190000\">2</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520200000\">2</hourlyForecast>\n
+        \  <hourlyForecast UTCTime=\"20260520210000\">2</hourlyForecast>\n   <hourlyForecast
+        UTCTime=\"20260520220000\">2</hourlyForecast>\n   <hourlyForecast UTCTime=\"20260520230000\">2</hourlyForecast>\n</hourlyForecastGroup>\n</forecastAirQuality>\n\n"
+    headers:
+      Accept-Ranges:
+      - bytes
+      Cache-Control:
+      - max-age=300
+      Connection:
+      - Upgrade
+      Content-Length:
+      - '4034'
+      Content-Type:
+      - application/xml
+      Date:
+      - Tue, 19 May 2026 11:13:34 GMT
+      Etag:
+      - '"fc2-6522978145880"'
+      Expires:
+      - Tue, 19 May 2026 11:18:34 GMT
+      Last-Modified:
+      - Tue, 19 May 2026 10:52:02 GMT
       Server:
       - Apache
       Strict-Transport-Security:

@@ -352,7 +352,7 @@ uv run pytest
 To use the existing cassettes use:
 
 ```shell
-uv run pytest --record-mode=once --snapshot-update
+uv run pytest --record-mode=once
 ```
 
 or force and update with:

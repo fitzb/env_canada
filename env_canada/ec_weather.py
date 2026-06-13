@@ -574,21 +574,20 @@ class ECWeather:
                 # Value
                 if meta.get("attribute"):
                     condition["value"] = element.attrib.get(meta["attribute"])
-                else:
-                    if meta["type"] == "int":
-                        try:
-                            condition["value"] = int(float(element.text))
-                        except ValueError:
-                            condition["value"] = 0
-                    elif meta["type"] == "float":
-                        try:
-                            condition["value"] = float(element.text)
-                        except ValueError:
-                            condition["value"] = float(0)
-                    elif meta["type"] == "str":
-                        condition["value"] = element.text
-                    elif meta["type"] == "timestamp":
-                        condition["value"] = _parse_timestamp(element.text)
+                elif meta["type"] == "int":
+                    try:
+                        condition["value"] = int(float(element.text))
+                    except ValueError:
+                        condition["value"] = 0
+                elif meta["type"] == "float":
+                    try:
+                        condition["value"] = float(element.text)
+                    except ValueError:
+                        condition["value"] = float(0)
+                elif meta["type"] == "str":
+                    condition["value"] = element.text
+                elif meta["type"] == "timestamp":
+                    condition["value"] = _parse_timestamp(element.text)
 
             return condition
 

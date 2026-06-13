@@ -234,11 +234,11 @@ interactions:
       Content-Type:
       - text/csv
       Date:
-      - Tue, 19 May 2026 11:13:45 GMT
+      - Tue, 19 May 2026 11:13:44 GMT
       Etag:
       - '"80e5-64c36e7226580"'
       Expires:
-      - Tue, 19 May 2026 11:18:45 GMT
+      - Tue, 19 May 2026 11:18:44 GMT
       Last-Modified:
       - Wed, 04 Mar 2026 18:22:30 GMT
       Server:
@@ -699,7 +699,7 @@ interactions:
         href=\"20260519T110157.114Z_MSC_CitypageWeather_s0000748_fr.xml\">20260519T110157.114Z_MSC_CitypageWeather_s0000748_fr.xml</a>
         2026-05-19 11:02   35K  \n<img src=\"/icons/unknown.gif\" alt=\"[   ]\"> <a
         href=\"20260519T110157.288Z_MSC_CitypageWeather_s0000231_en.xml\">20260519T110157.288Z_MSC_CitypageWeather_s0000231_en.xml</a>
-        2026-05-19 11:02   38K  \n<img src=\"/icons/unknown.gif\" alt=\"[   ]\"> <a
+        2026-05-19 11:01   38K  \n<img src=\"/icons/unknown.gif\" alt=\"[   ]\"> <a
         href=\"20260519T110157.345Z_MSC_CitypageWeather_s0000231_fr.xml\">20260519T110157.345Z_MSC_CitypageWeather_s0000231_fr.xml</a>
         2026-05-19 11:02   38K  \n<img src=\"/icons/unknown.gif\" alt=\"[   ]\"> <a
         href=\"20260519T110157.396Z_MSC_CitypageWeather_s0000374_en.xml\">20260519T110157.396Z_MSC_CitypageWeather_s0000374_en.xml</a>
@@ -1126,13 +1126,13 @@ interactions:
       Content-Encoding:
       - gzip
       Content-Length:
-      - '4694'
+      - '4696'
       Content-Type:
       - text/html;charset=UTF-8
       Date:
-      - Tue, 19 May 2026 11:13:45 GMT
+      - Tue, 19 May 2026 11:13:44 GMT
       Expires:
-      - Tue, 19 May 2026 11:18:45 GMT
+      - Tue, 19 May 2026 11:18:44 GMT
       Server:
       - Apache
       Strict-Transport-Security:
@@ -1606,17 +1606,65 @@ interactions:
       Content-Type:
       - application/xml
       Date:
-      - Tue, 19 May 2026 11:13:45 GMT
+      - Tue, 19 May 2026 11:13:44 GMT
       Etag:
-      - '"8ca4-65229a79a466c"'
+      - '"8ca4-65229a79db7e8"'
       Expires:
-      - Tue, 19 May 2026 11:18:45 GMT
+      - Tue, 19 May 2026 11:18:44 GMT
       Last-Modified:
       - Tue, 19 May 2026 11:05:19 GMT
       Server:
       - Apache
       Strict-Transport-Security:
       - max-age=63072000; preload
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      User-Agent:
+      - env_canada/0.15.0
+    method: GET
+    uri: https://geo.weather.gc.ca/geomet?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=Current-Alerts&outputFormat=application/json&BBOX=44.9495,-76.3315,45.8505,-75.0485,EPSG:4326
+  response:
+    body:
+      string: '{
+
+        "type": "FeatureCollection",
+
+        "numberMatched": 0,
+
+        "name": "Current-Alerts",
+
+        "features": [
+
+
+        ]
+
+        }
+
+        '
+    headers:
+      Access-Control-Allow-Headers:
+      - Origin, X-Requested-With, Content-Type, Accept, Authorization
+      Access-Control-Allow-Methods:
+      - POST, GET, OPTIONS
+      Access-Control-Allow-Origin:
+      - '*'
+      Content-Type:
+      - application/json
+      Date:
+      - Tue, 19 May 2026 11:13:44 GMT
+      Server:
+      - Apache
+      Strict-Transport-Security:
+      - max-age=63072000; preload
+      - max-age=63072000; preload
+      Transfer-Encoding:
+      - chunked
+      X-GeoMet-Status:
+      - 200 OK
     status:
       code: 200
       message: OK

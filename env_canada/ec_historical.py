@@ -312,21 +312,18 @@ class ECHistorical:
 
                     if element is None or element.text is None:
                         stationdata["value"] = None
+                    elif meta.get("attribute"):
+                        stationdata["value"] = element.attrib.get(meta["attribute"])
                     else:
-                        if meta.get("attribute"):
-                            stationdata["value"] = element.attrib.get(meta["attribute"])
+                        if meta["type"] == "int":
+                            stationdata["value"] = int(element.text)
+                        elif meta["type"] == "float":
+                            stationdata["value"] = float(element.text.replace(",", "."))
                         else:
-                            if meta["type"] == "int":
-                                stationdata["value"] = int(element.text)
-                            elif meta["type"] == "float":
-                                stationdata["value"] = float(
-                                    element.text.replace(",", ".")
-                                )
-                            else:
-                                stationdata["value"] = element.text
+                            stationdata["value"] = element.text
 
-                            if element.attrib.get("units"):
-                                stationdata["unit"] = element.attrib.get("units")
+                        if element.attrib.get("units"):
+                            stationdata["unit"] = element.attrib.get("units")
                     stationdata["label"] = meta[language]
                     return stationdata
 

@@ -44,23 +44,23 @@ dev = [
     "colorlog >=6.8",
     "lxml-stubs >= 0.5.1",
     "pandas-stubs >= 2.2.3",
-    "pytest-recording>=0.13.4",
     "types-python-dateutil >= 2.9",
 ]
 lint = [
     "mypy >=1.11",
-    "pylint >=3.2",
     "ruff >=0.9.1",
 ]
 test = [
     "pytest >=8.3",
     "pytest-asyncio >=0.23",
     "syrupy >=4.8.1",
+    "pytest-recording>=0.13.4",
     "freezegun >= 1.5.1",
 ]
 
 [tool.pytest.ini_options]
 asyncio_default_fixture_loop_scope = "function"
+addopts = "--record-mode=all --snapshot-update"
 
 [tool.setuptools]
 include-package-data = true
@@ -70,5 +70,8 @@ packages = ["env_canada"]
 env_canada = ["*.ttf"]
 
 [tool.ruff.lint]
-select = ["E4", "E7", "E9", "F", "B", "T201", "PD", "RUF", "ERA", "LOG", "G", "UP"]
-ignore = ["ERA001"]
+select = ["E", "PL", "F", "B", "T201", "PD", "RUF", "ERA", "LOG", "G", "UP"]
+ignore = ["ERA001", "E501"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["PLR2004", "PLC0415"]

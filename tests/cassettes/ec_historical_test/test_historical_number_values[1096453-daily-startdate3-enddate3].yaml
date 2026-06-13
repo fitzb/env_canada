@@ -397,7 +397,7 @@ interactions:
       Content-Type:
       - application/force-download
       Date:
-      - Sat, 16 May 2026 03:24:14 GMT
+      - Tue, 19 May 2026 11:13:35 GMT
       Expires:
       - Mon, 26 Jul 1997 05:00:00 GMT
       Pragma:
@@ -407,8 +407,8 @@ interactions:
       Server:
       - Apache
       Set-Cookie:
-      - PHPSESSID=1494a8485251915cd82ae099bccd5040; path=/
-      - jsenabled=0; expires=Sat, 16-May-2026 04:24:14 GMT; Max-Age=3600; path=/
+      - PHPSESSID=426532af921e19aa98a5e08265984ab6; path=/
+      - jsenabled=0; expires=Tue, 19-May-2026 12:13:35 GMT; Max-Age=3600; path=/
       Strict-Transport-Security:
       - max-age=63072000; preload
       Vary:
@@ -814,7 +814,7 @@ interactions:
       Content-Type:
       - application/force-download
       Date:
-      - Sat, 16 May 2026 03:24:15 GMT
+      - Tue, 19 May 2026 11:13:35 GMT
       Expires:
       - Mon, 26 Jul 1997 05:00:00 GMT
       Pragma:
@@ -824,8 +824,8 @@ interactions:
       Server:
       - Apache
       Set-Cookie:
-      - PHPSESSID=afaaf433996a2f574aa42a306491acb3; path=/
-      - jsenabled=0; expires=Sat, 16-May-2026 04:24:15 GMT; Max-Age=3600; path=/
+      - PHPSESSID=8666c99fb5dbe55805c219d589e8a1f7; path=/
+      - jsenabled=0; expires=Tue, 19-May-2026 12:13:35 GMT; Max-Age=3600; path=/
       Strict-Transport-Security:
       - max-age=63072000; preload
       Vary:

@@ -49,7 +49,7 @@ repos:
           - types-python-dateutil
   - repo: https://github.com/astral-sh/ruff-pre-commit
     # Ruff version.
-    rev: v0.15.13
+    rev: v0.15.17
     hooks:
       # Run the linter.
       - id: ruff-check
