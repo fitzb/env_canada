@@ -62,7 +62,7 @@ async def test_weather_exception_on_old_forecast_data():
 @pytest.mark.vcr
 async def test_weather_exception_returns_cached_data():
     with freeze_time("2025-02-06 00:00", real_asyncio=True) as frozen_time:
-        ecw, resp = setup_test(
+        ecw, _resp = setup_test(
             {
                 "station": "ON/s0000430",
                 "sites": "tests/fixtures/site_list.csv",
@@ -130,7 +130,7 @@ async def test_station_id_formats_create_tuples():
     ]
 
     for station_input, expected_tuple in test_cases:
-        ecw, resp = setup_test(
+        ecw, _resp = setup_test(
             {
                 "station": station_input,
                 "sites": "tests/fixtures/site_list.csv",
@@ -149,7 +149,7 @@ async def test_station_id_formats_create_tuples():
 @freeze_time("2025-05-16 00:00")
 async def test_home_assistant_compatibility():
     """Test that station_id remains a string for Home Assistant compatibility."""
-    ecw, resp = setup_test(
+    ecw, _resp = setup_test(
         {
             "station": "ON/s0000430",
             "sites": "tests/fixtures/site_list.csv",
