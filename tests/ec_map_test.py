@@ -3,7 +3,6 @@ from datetime import datetime
 from io import BytesIO
 from unittest.mock import patch
 
-from env_canada import ECMap
 import pytest
 from PIL import Image
 from pydantic import ValidationError
@@ -139,15 +138,15 @@ class TestECMapInitialization:
             ECMap(coordinates=(50, -100), width=5, layer="rain")
 
         # Invalid fps - too low
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), fps=0, layer="rain")
 
         # Invalid fps - too high
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), fps=31, layer="rain")
 
         # Invalid loop_minutes - negative
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), loop_minutes=-1, layer="rain")
 
     def test_fps_and_loop_minutes_defaults(self):
@@ -188,7 +187,7 @@ class TestECMapInitialization:
 
     def test_future_minutes_invalid(self):
         """Test that a negative future_minutes is rejected"""
-        with pytest.raises(error.MultipleInvalid):
+        with pytest.raises(ValidationError):
             ECMap(coordinates=(50, -100), layer="rain", future_minutes=-1)
 
     def test_future_layer_lookup(self):

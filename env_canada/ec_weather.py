@@ -392,6 +392,7 @@ class ECWeather(BaseModel):
     metadata: MetaData = MetaData(attribution=ATTRIBUTION["english"])
     conditions: dict[str, Any] = {}
     alerts: dict[str, Any] = {}
+    alert_features: list = []
     daily_forecasts: list = []
     hourly_forecasts: list = []
     forecast_time: datetime | None = None
