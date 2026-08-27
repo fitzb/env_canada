@@ -138,6 +138,7 @@ class Coordinates(BaseModel):
     lat: int | float = Field(..., ge=-90, le=90)
     lon: int | float = Field(..., ge=-180, le=180)
 
+
 class ECMap(BaseModel):
     """Model to hold the Environment Canadata Map"""
 
@@ -152,13 +153,12 @@ class ECMap(BaseModel):
     language: Literal["english", "french"] = Field("english")
     metadata: dict[str, Any] = Field({"attribution": ATTRIBUTION["english"]})
     image: Any = Field(None)
-    colors: int = Field(14,ge=8,le=14)
+    colors: int = Field(14, ge=8, le=14)
     fps: int = Field(5, ge=1, le=30)
     loop_minutes: int = Field(0, ge=0)
     interpolation: bool = Field(False)
     webp: bool = Field(False)
-    future_minutes: int = Field(0,ge=0)
-    _future_layer = wms_layers_extrapolation.get(layer)
+    future_minutes: int = Field(0, ge=0)
     _future_boundary = None
     _reference_time = None
     _timestamp: datetime | None = None
@@ -175,6 +175,11 @@ class ECMap(BaseModel):
         if "language" in values:
             values["metadata"] = {"attribution": ATTRIBUTION["english"]}
         return values
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def _future_layer(self) -> str | None:
+        return wms_layers_extrapolation.get(self.layer)
 
     @computed_field  # type: ignore[prop-decorator]
     @property
@@ -273,7 +278,7 @@ class ECMap(BaseModel):
         if result is None:
             return None
         start, end, _ = result
-        self.timestamp = end.isoformat()
+        self._timestamp = end.isoformat()
         return (start, end)
 
     async def _extend_into_future(self, end):

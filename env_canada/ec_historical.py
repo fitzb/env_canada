@@ -125,15 +125,6 @@ def parse_timestamp(t):
     return parser.parse(t).replace(tzinfo=tz.UTC)
 
 
-def coerce_station_id(v):
-    """Coerce station_id to string, accepting both int and str inputs."""
-    if isinstance(v, int):
-        return str(v)
-    if isinstance(v, str):
-        return v
-    raise vol.Invalid("station_id must be a string or integer")
-
-
 async def get_historical_stations(
     coordinates,
     radius=25,
