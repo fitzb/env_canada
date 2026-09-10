@@ -163,6 +163,7 @@ class ECMap(BaseModel):
     _reference_time = None
     _timestamp: datetime | None = None
     _font: Any | None = None
+    _observed_end: datetime | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -273,6 +274,7 @@ class ECMap(BaseModel):
         """
         self._future_boundary = None
         self._reference_time = None
+        self._observed_end = None
 
         result = await self._get_layer_dimension(wms_layers[self.layer])
         if result is None:
@@ -284,8 +286,10 @@ class ECMap(BaseModel):
     async def _extend_into_future(self, end):
         """Extend `end` using the radar extrapolation layer, if
         future_minutes is set and one exists for self.layer. Pins
-        self._future_boundary/_reference_time for _resolve_layer to use
-        while building the frames for this loop."""
+        self._future_boundary/_reference_time/_observed_end for
+        _resolve_layer to use while building the frames for this loop."""
+
+        self._observed_end = end
 
         if not (self.future_minutes and self._future_layer):
             return end
@@ -310,15 +314,27 @@ class ECMap(BaseModel):
         return min(future_end, end + timedelta(minutes=self.future_minutes))
 
     def _resolve_layer(self, frame_time):
-        """Return (wms_layer_name, is_future) for a given frame time."""
+        """Return (wms_layer_name, is_future, query_time) for a frame's
+        nominal position in the loop.
+
+        The observed and extrapolation layers refresh on independent
+        schedules, so the extrapolation layer's data window can open
+        either before or after "now" depending on where its model run
+        cycle happens to be. If frame_time falls after the observed
+        layer's last frame but before the extrapolation layer's own data
+        starts, neither layer actually has data for that exact instant -
+        query_time is clamped to the earliest the extrapolation layer has,
+        instead of requesting a time that would 404/error out."""
         if self._future_boundary is not None and frame_time >= self._future_boundary:
-            return self._future_layer, True
-        return wms_layers[self.layer], False
+            return self._future_layer, True, frame_time
+        if self._observed_end is not None and frame_time > self._observed_end:
+            return self._future_layer, True, self._future_boundary
+        return wms_layers[self.layer], False, frame_time
 
     async def _get_layer_image(self, frame_time):
         """Fetch image for the layer at a specific time."""
-        layer_name, is_future = self._resolve_layer(frame_time)
-        time = frame_time.strftime("%Y-%m-%dT%H:%M:00Z")
+        layer_name, is_future, query_time = self._resolve_layer(frame_time)
+        time = query_time.strftime("%Y-%m-%dT%H:%M:00Z")
         layer_cache_key = (
             f"{self._get_cache_prefix()}-layer-{layer_name}-{self.colors}"
             f"-{self.interpolation}-{self.webp}-{time}"
@@ -352,7 +368,7 @@ class ECMap(BaseModel):
     async def _create_composite_image(self, frame_time):
         """Create a composite image from the layer."""
 
-        layer_name, _ = self._resolve_layer(frame_time)
+        layer_name, _, _ = self._resolve_layer(frame_time)
         time = frame_time.strftime("%Y-%m-%dT%H:%M:00Z")
         cache_key = (
             f"{self._get_cache_prefix()}-composite-{layer_name}-{self.colors}"
